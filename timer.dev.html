@@ -5,13 +5,19 @@
 		const obj = {};
 		for(let i=0;i<TIMER_COUNT;i++){
 			const id = i+1;
-			obj[`sc${id}Active`] = {value: false};
-			obj[`sc${id}Action`] = {value:0};
-			obj[`sc${id}Timetype`] = {value:"time"},
-			obj[`sc${id}Time`] = {value: "00:00"},
-			obj[`sc${id}Zman`] = {value:"AlosHashachar"},
-			obj[`sc${id}Zmanoffset`] = {value:0},
-			obj[`sc${id}Zmanoffsettype`] = {value:60000}
+			obj[`sc${id}TimeActive`] = {value: false};
+			obj[`sc${id}TimeAction`] = {value:0};
+			obj[`sc${id}Timetype`] = {value:"time"};
+			obj[`sc${id}Time`] = {value: "00:00"};
+			obj[`sc${id}Zman`] = {value:"AlosHashachar"};
+			obj[`sc${id}Zmanoffset`] = {value:0};
+			obj[`sc${id}Zmanoffsettype`] = {value:60000};
+		}
+		for(let i=0;i<DAYS_COUNT;i++){
+			const id = i+1;
+			obj[`sc${id}DateActive`] = {value: false};
+			obj[`sc${id}DateAction`] = {value:0};
+			obj[`sc${id}Datetype`] = {value:"weekday"};
 		}
 		return obj;
 	})();
@@ -62,8 +68,12 @@
 			});
 			$(".js-timetype").change(e=>{
 				const val = e.target.value;
-				const cont = $(e.target).parents(".js-timerentry").removeClass("timertype-time timertype-zman").addClass(`timertype-${val}`);
-			})
+				$(e.target).parents(".js-timerentry").removeClass("timertype-time timertype-zman").addClass(`timertype-${val}`);
+			});
+			$(".js-datetype").change(e=>{
+				const val = e.target.value;
+				$(e.target).parents(".js-dateentry").removeClass("datetype-weekday datetype-monthday").addClass(`datetype-${val}`);
+			});
 			$(".js-timer-active").change(e=>{
 				if(e.target.checked){
 					$(e.target).parents(".js-timerentry").addClass("active");
@@ -137,80 +147,86 @@
 		.timertype-zman .time-selection{
 			display: none!important;
 		}
-		.timerentry{
+		.entry{
 			opacity: .5;
 		}
-		.timerentry.active{
+		.entry.active{
 			opacity: 1;
 		}
-		.timerentry{
+		.entry{
 			margin: 10px 0px;
 			background-color: #f2f2f2;
 			padding: 10px;
 		}
-		.timerentry [data-nodetype="Active"]{
+		.entry [data-nodetype="Active"]{
 			width:18%;
 			display:inline-block;
 		}
-		.timerentry [data-nodetype="Active"] label{
+		.entry [data-nodetype="Active"] label{
 			width:40px;
 		}
-		.timerentry [data-nodetype="Active"] input{
+		.entry [data-nodetype="Active"] input{
 			width:20px;
 			vertical-align:top;
 		}
-		.timerentry [data-nodetype="Action"] {
+		.entry [data-nodetype="Action"] {
 			width:32%;
 			display:inline-block;
 		}
-		.timerentry [data-nodetype="Action"] label{
+		.entry [data-nodetype="Action"] label{
 			width:44px;
 		}
-		.timerentry [data-nodetype="Action"] select{
+		.entry [data-nodetype="Action"] select{
 			width: 80px;
 		}
-		.timerentry [data-nodetype="Timetype"]{
+		.entry [data-nodetype="Timetype"]{
 			width:40%;
 			padding-left:14px;
 			display:inline-block;
 		}
-		.timerentry [data-nodetype="Timetype"] label{
+		.entry [data-nodetype="Timetype"] label{
 			width:70px;
 		}
-		.timerentry [data-nodetype="Timetype"] select{
+		.entry [data-nodetype="Timetype"] select{
 			width:80px;
 		}
-		.timerentry [data-nodetype="Time"]{
+		.entry [data-nodetype="Time"]{
 			width:40%;
 			display:inline-block;
 		}
-		.timerentry [data-nodetype="Time"] label{
+		.entry [data-nodetype="Time"] label{
 			width:40px;
 		}
-		.timerentry [data-nodetype="Time"] input{
+		.entry [data-nodetype="Time"] input{
 			width:110px;
 		}
-		.timerentry [data-nodetype="Zman"]{
+		.entry [data-nodetype="Zman"]{
 			width:48%;
 			display:inline-block;
 		}
-		.timerentry [data-nodetype="Zman"] label{
+		.entry [data-nodetype="Zman"] label{
 			width:56px;
 		}
-		.timerentry [data-nodetype="Zman"] select{
+		.entry [data-nodetype="Zman"] select{
 			width:138px;
 		}
-		.timerentry [data-nodetype="Zmanoffset"]{
+		.entry [data-nodetype="Zmanoffset"]{
 			display:inline-block;
 		}
-		.timerentry [data-nodetype="Zmanoffset"] label{
+		.entry [data-nodetype="Zmanoffset"] label{
 			width:40px;
 		}
-		.timerentry [data-nodetype="Zmanoffset"] input{
+		.entry [data-nodetype="Zmanoffset"] input{
 			width:58px;
 		}
-		.timerentry [data-nodetype="Zmanoffset"] select{
+		.entry [data-nodetype="Zmanoffset"] select{
 			width:110px;
+		}
+		.datetype-monthday .weekday-selection{
+			display: none!important;
+		}
+		.datetype-weekday .monthday-selection{
+			display: none!important;
 		}
 	</style>
 	<div id="schedule-container" class="expend-container collapsed">
@@ -227,8 +243,7 @@
 			<i class="fa fa-chevron-down collapsed-vis"></i>
 			<i class="fa fa-chevron-up expanded-vis"></i>
 		</h4>
-		<div class="js-dateentry daterentry expanded-vis" >
-		</div>
+		<!-- REPLACE_DAYS_HTML -->
 	</div>
 </script>
 

@@ -8,14 +8,14 @@ module.exports = {
 		for (let i = 0; i < TIMER_COUNT; i++) {
 			const idx = i + 1;
 			htmlArray.push(`
-				<div class="js-timerentry timerentry expanded-vis" >
-					<div class="form-row"  data-nodetype="Active">
-						<label for="node-input-sc${idx}Active" >Active</label>
-						<input type="checkbox" id="node-input-sc${idx}Active" class="js-timer-active" />
+				<div class="js-timerentry entry expanded-vis" >
+					<div class="form-row"  data-nodetype="TimeActive">
+						<label for="node-input-sc${idx}TimeActive" >Active</label>
+						<input type="checkbox" id="node-input-sc${idx}TimeActive" class="js-timer-active" />
 					</div>
-					<div class="form-row"  data-nodetype="Action">
-						<label for="node-input-sc${idx}Action" >Action:</label>
-						<select id="node-input-sc${idx}Action" >
+					<div class="form-row"  data-nodetype="TimeAction">
+						<label for="node-input-sc${idx}TimeAction" >Action:</label>
+						<select id="node-input-sc${idx}TimeAction" >
 							<option value="1">On</option>
 							<option value="0">Off</option>
 						</select>
@@ -67,6 +67,41 @@ module.exports = {
 					</div>
 				</div>
 			`);
+		}
+		return htmlArray.join("\n");
+	})(),
+	DAYS_HTML: (()=>{
+		const htmlArray = [];
+		for (let i = 0; i < DAYS_COUNT; i++) {
+			const idx = i + 1;
+			htmlArray.push(`
+				<div class="js-dateentry entry expanded-vis" >
+					<div class="form-row"  data-nodetype="DateActive">
+						<label for="node-input-sc${idx}DateActive" >Active</label>
+						<input type="checkbox" id="node-input-sc${idx}DateActive" class="js-timer-active" />
+					</div>
+					<div class="form-row"  data-nodetype="DateAction">
+						<label for="node-input-sc${idx}DateAction" >Action:</label>
+						<select id="node-input-sc${idx}DateAction" >
+							<option value="1">Include</option>
+							<option value="0">Exclude</option>
+						</select>
+					</div>
+					<div class="form-row" data-nodetype="Datetype">
+						<label for="node-input-sc${idx}Datetype" >Time Type</label>
+						<select id="node-input-sc${idx}Datetype"  class="js-datetype">
+							<option value="weekday">Weekdays</option>
+							<option value="monthday">Dates</option>
+						</select>
+					</div>
+					<div class="form-row weekday-selection"  data-nodetype="Weekday">
+						Weekday
+					</div>
+					<div class="form-row monthday-selection"  data-nodetype="Weekday">
+						Month
+					</div>
+				</div>
+		`);
 		}
 		return htmlArray.join("\n");
 	})()
