@@ -1,0 +1,20 @@
+{
+  "name": "node-red-contrib-jewishtimer",
+  "version": "0.1.1",
+  "description": "A Timer for node-red which supports jewish dates and Zmanim",
+  "node-red": {
+    "nodes": {
+      "jewish-timer": "timer.js"
+    }
+  },
+  "author": "Yoel Porgesz",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "he-date": "^1.2.2",
+    "kosher-zmanim": "^0.7.1"
+  },
+  "scripts" : {
+  	"build": "node ./build"
+  }
+}

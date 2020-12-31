@@ -1,0 +1,836 @@
+<script type="text/javascript">
+	const TIMER_COUNT = 10;
+	const DAYS_COUNT = 10;
+	const timerDefaults = (()=>{
+		const obj = {};
+		for(let i=0;i<TIMER_COUNT;i++){
+			const id = i+1;
+			obj[`sc${id}Active`] = {value: false};
+			obj[`sc${id}Action`] = {value:0};
+			obj[`sc${id}Timetype`] = {value:"time"},
+			obj[`sc${id}Time`] = {value: "00:00"},
+			obj[`sc${id}Zman`] = {value:"AlosHashachar"},
+			obj[`sc${id}Zmanoffset`] = {value:0},
+			obj[`sc${id}Zmanoffsettype`] = {value:60000}
+		}
+		return obj;
+	})();
+
+    RED.nodes.registerType('jewish-timer',{
+        category: 'function',
+        color: '#a6bbcf',
+        defaults: {
+            name: {value:""},
+			comment: {value: ""},
+			lat: {value: 0, required:true},
+			lon: {value: 0, required:true},
+			diaspora: {value:true},
+			topic: {value:""},
+			onMsg: {value: "ON"},
+			offMsg: {value: "OFF"},
+			...timerDefaults,
+			
+			
+			startoffset: {value:0},
+			endoffset: {value:72},
+			delay: {value:0},
+			delaytype: {value:60000}
+        },
+        inputs:1,
+        outputs:2,
+		outputLabels: ["In Effect", "Not in Effect"],
+        icon: "switch.png",
+        label: function() {
+            return this.name||"Jewish Timer";
+        },
+		oneditprepare: function() {
+            if (($("#node-input-lat").val() === "0") && ($("#node-input-lon").val() === "0")) {
+                if ("geolocation" in navigator) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        $("#node-input-lat").val(Number(position.coords.latitude.toFixed(5)));
+                        $("#node-input-lon").val(Number(position.coords.longitude.toFixed(5)));
+                    });
+                }
+            }
+			$(".expand-collapse").click((e)=>{
+				const cont = $(e.target).parents(".expend-container");
+				if(cont.hasClass("expanded")){
+					cont.removeClass("expanded").addClass("collapsed")
+				}else{
+					cont.removeClass("collapsed").addClass("expanded")
+				}
+			});
+			$(".js-timetype").change(e=>{
+				const val = e.target.value;
+				const cont = $(e.target).parents(".js-timerentry").removeClass("timertype-time timertype-zman").addClass(`timertype-${val}`);
+			})
+			$(".js-timer-active").change(e=>{
+				if(e.target.checked){
+					$(e.target).parents(".js-timerentry").addClass("active");
+				} else {
+					$(e.target).parents(".js-timerentry").removeClass("active");
+				}
+			});
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="jewish-timer">
+	<style>
+		div.checkbox-field{
+			max-width:200px;
+		}
+		div.checkbox-field input {
+			width:20px;
+			margin-bottom:4px;
+		}
+		.large-label {
+			width:100%;
+		}
+	</style>
+	<div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Jewish Timer">
+    </div>
+	<div class="form-row">
+        <label for="node-input-comment"><i class="fa fa-tag"></i> Comment</label>
+        <input type="text" id="node-input-comment" placeholder="Jewish Timer">
+    </div>
+    <div class="form-row">
+        <label for="node-input-lat"><i class="fa fa-compass"></i> Lat</label>
+        <input type="text" id="node-input-lat" placeholder="0">
+	</div>
+    <div class="form-row">
+        <label for="node-input-lon"><i class="fa fa-compass"></i> Lon</label>
+        <input type="text" id="node-input-lon" placeholder="0">
+    </div>
+	<div class="form-row checkbox-field">
+		<label for="node-input-diaspora"><i class="fa fa-map"></i> Diaspora</label>
+        <input type="checkbox" checked id="node-input-diaspora" style="width:20px;margin-bottom:4px;">
+    </div>
+	<div class="form-row">
+		<label for="node-input-topic"><i class="fa fa-tag"></i>TOPIC</label>
+		<input type="text" id="node-input-topic" placeholder="MQTT Topic" />
+	</div>
+	<div class="form-row">
+		<label for="node-input-onmsg"><i class="fa fa-envelop"></i>On MSG</label>
+		<input type="text" id="node-input-onmsg" placeholder="ON" value="ON" />
+	</div>
+    <div class="form-row">
+		<label for="node-input-offmsg"><i class="fa fa-envelop"></i>Off MSG</label>
+		<input type="text" id="node-input-offmsg" placeholder="OFF" value="OFF" />
+	</div>
+	<hr/>
+	<style>
+		.expend-container.collapsed .expanded-vis {
+			display: none!important;
+		}
+		.expend-container.expanded .collapsed-vis{
+			display: none!important;
+		}
+		.expand-collapse {
+			cursor: pointer;
+		}
+		.timertype-time .zman-selection{
+			display: none!important;
+		}
+		.timertype-zman .time-selection{
+			display: none!important;
+		}
+		.timerentry{
+			opacity: .5;
+		}
+		.timerentry.active{
+			opacity: 1;
+		}
+		.timerentry{
+			margin: 10px 0px;
+			background-color: #f2f2f2;
+			padding: 10px;
+		}
+		.timerentry [data-nodetype="Active"]{
+			width:18%;
+			display:inline-block;
+		}
+		.timerentry [data-nodetype="Active"] label{
+			width:40px;
+		}
+		.timerentry [data-nodetype="Active"] input{
+			width:20px;
+			vertical-align:top;
+		}
+		.timerentry [data-nodetype="Action"] {
+			width:32%;
+			display:inline-block;
+		}
+		.timerentry [data-nodetype="Action"] label{
+			width:44px;
+		}
+		.timerentry [data-nodetype="Action"] select{
+			width: 80px;
+		}
+		.timerentry [data-nodetype="Timetype"]{
+			width:40%;
+			padding-left:14px;
+			display:inline-block;
+		}
+		.timerentry [data-nodetype="Timetype"] label{
+			width:70px;
+		}
+		.timerentry [data-nodetype="Timetype"] select{
+			width:80px;
+		}
+		.timerentry [data-nodetype="Time"]{
+			width:40%;
+			display:inline-block;
+		}
+		.timerentry [data-nodetype="Time"] label{
+			width:40px;
+		}
+		.timerentry [data-nodetype="Time"] input{
+			width:110px;
+		}
+		.timerentry [data-nodetype="Zman"]{
+			width:48%;
+			display:inline-block;
+		}
+		.timerentry [data-nodetype="Zman"] label{
+			width:56px;
+		}
+		.timerentry [data-nodetype="Zman"] select{
+			width:138px;
+		}
+		.timerentry [data-nodetype="Zmanoffset"]{
+			display:inline-block;
+		}
+		.timerentry [data-nodetype="Zmanoffset"] label{
+			width:40px;
+		}
+		.timerentry [data-nodetype="Zmanoffset"] input{
+			width:58px;
+		}
+		.timerentry [data-nodetype="Zmanoffset"] select{
+			width:110px;
+		}
+	</style>
+	<div id="schedule-container" class="expend-container collapsed">
+		<h4 class="expand-collapse"> Set Schedule Times
+			<i class="fa fa-chevron-down collapsed-vis"></i>
+			<i class="fa fa-chevron-up expanded-vis"></i>
+		</h4>
+		
+				<div class="js-timerentry timerentry expanded-vis" >
+					<div class="form-row"  data-nodetype="Active">
+						<label for="node-input-sc1Active" >Active</label>
+						<input type="checkbox" id="node-input-sc1Active" class="js-timer-active" />
+					</div>
+					<div class="form-row"  data-nodetype="Action">
+						<label for="node-input-sc1Action" >Action:</label>
+						<select id="node-input-sc1Action" >
+							<option value="1">On</option>
+							<option value="0">Off</option>
+						</select>
+					</div>
+					<div class="form-row" data-nodetype="Timetype">
+						<label for="node-input-sc1Timetype" >Time Type</label>
+						<select id="node-input-sc1Timetype"  class="js-timetype">
+							<option value="time">Time</option>
+							<option value="zman">Zman</option>
+						</select>
+					</div>
+					<div class="form-row time-selection"  data-nodetype="Time">
+						<label for="node-input-sc1Time" style="width:40px">Time:</label>
+						<input type="time" id="node-input-sc1Time" style="width:110px"/>
+					</div>
+					<div class="form-row zman-selection"  data-nodetype="Zman">
+						<label for="node-input-sc1Zman" style="width:56px">Zman <i title="Avaliable Zmanim are the basic zmanim from the KosherZmanim lib" class="fa fa-question-circle"></i>: </label>
+						<select id="node-input-sc1Zman" style="width:138px">
+							<option value="BeginAstronomicalTwilight">BeginAstronomicalTwilight</option>
+							<option value="AlosHashachar">AlosHashachar</option>
+							<option value="Alos72">Alos72</option>
+							<option value="BeginNauticalTwilight">BeginNauticalTwilight</option>
+							<option value="BeginCivilTwilight">BeginCivilTwilight</option>
+							<option value="SeaLevelSunrise">SeaLevelSunrise</option>
+							<option value="Sunrise">Sunrise</option>
+							<option value="SofZmanShmaMGA">SofZmanShmaMGA</option>
+							<option value="SofZmanShmaGRA">SofZmanShmaGRA</option>
+							<option value="SofZmanTfilaMGA">SofZmanTfilaMGA</option>
+							<option value="SofZmanTfilaGRA">SofZmanTfilaGRA</option>
+							<option value="Chatzos">Chatzos</option>
+							<option value="CandleLighting">CandleLighting</option>
+							<option value="SeaLevelSunset">SeaLevelSunset</option>
+							<option value="Sunset">Sunset</option>
+							<option value="EndCivilTwilight">EndCivilTwilight</option>
+							<option value="Tzais">Tzais</option>
+							<option value="EndNauticalTwilight">EndNauticalTwilight</option>
+							<option value="Tzais72">Tzais72</option>
+							<option value="EndAstronomicalTwilight">EndAstronomicalTwilight</option>
+						</select>
+					</div>
+					<div class="form-row  zman-selection"  data-nodetype="Zmanoffset">
+						<label for="node-input-sc1Zmanoffset" style="width:40px;">Offset:</label>
+						<input type="number" id="node-input-sc1Zmanoffset" placeholder="0">
+						<select id="node-input-sc1Zmanoffsettype" name="node-input-sc1Zmanoffsettype">
+							<option value="1000">Seconds</option>
+							<option value="60000" selected="selected">Minutes</option>
+							<option value="3600000">Hours</option>
+						</select>
+					</div>
+				</div>
+			
+
+				<div class="js-timerentry timerentry expanded-vis" >
+					<div class="form-row"  data-nodetype="Active">
+						<label for="node-input-sc2Active" >Active</label>
+						<input type="checkbox" id="node-input-sc2Active" class="js-timer-active" />
+					</div>
+					<div class="form-row"  data-nodetype="Action">
+						<label for="node-input-sc2Action" >Action:</label>
+						<select id="node-input-sc2Action" >
+							<option value="1">On</option>
+							<option value="0">Off</option>
+						</select>
+					</div>
+					<div class="form-row" data-nodetype="Timetype">
+						<label for="node-input-sc2Timetype" >Time Type</label>
+						<select id="node-input-sc2Timetype"  class="js-timetype">
+							<option value="time">Time</option>
+							<option value="zman">Zman</option>
+						</select>
+					</div>
+					<div class="form-row time-selection"  data-nodetype="Time">
+						<label for="node-input-sc2Time" style="width:40px">Time:</label>
+						<input type="time" id="node-input-sc2Time" style="width:110px"/>
+					</div>
+					<div class="form-row zman-selection"  data-nodetype="Zman">
+						<label for="node-input-sc2Zman" style="width:56px">Zman <i title="Avaliable Zmanim are the basic zmanim from the KosherZmanim lib" class="fa fa-question-circle"></i>: </label>
+						<select id="node-input-sc2Zman" style="width:138px">
+							<option value="BeginAstronomicalTwilight">BeginAstronomicalTwilight</option>
+							<option value="AlosHashachar">AlosHashachar</option>
+							<option value="Alos72">Alos72</option>
+							<option value="BeginNauticalTwilight">BeginNauticalTwilight</option>
+							<option value="BeginCivilTwilight">BeginCivilTwilight</option>
+							<option value="SeaLevelSunrise">SeaLevelSunrise</option>
+							<option value="Sunrise">Sunrise</option>
+							<option value="SofZmanShmaMGA">SofZmanShmaMGA</option>
+							<option value="SofZmanShmaGRA">SofZmanShmaGRA</option>
+							<option value="SofZmanTfilaMGA">SofZmanTfilaMGA</option>
+							<option value="SofZmanTfilaGRA">SofZmanTfilaGRA</option>
+							<option value="Chatzos">Chatzos</option>
+							<option value="CandleLighting">CandleLighting</option>
+							<option value="SeaLevelSunset">SeaLevelSunset</option>
+							<option value="Sunset">Sunset</option>
+							<option value="EndCivilTwilight">EndCivilTwilight</option>
+							<option value="Tzais">Tzais</option>
+							<option value="EndNauticalTwilight">EndNauticalTwilight</option>
+							<option value="Tzais72">Tzais72</option>
+							<option value="EndAstronomicalTwilight">EndAstronomicalTwilight</option>
+						</select>
+					</div>
+					<div class="form-row  zman-selection"  data-nodetype="Zmanoffset">
+						<label for="node-input-sc2Zmanoffset" style="width:40px;">Offset:</label>
+						<input type="number" id="node-input-sc2Zmanoffset" placeholder="0">
+						<select id="node-input-sc2Zmanoffsettype" name="node-input-sc2Zmanoffsettype">
+							<option value="1000">Seconds</option>
+							<option value="60000" selected="selected">Minutes</option>
+							<option value="3600000">Hours</option>
+						</select>
+					</div>
+				</div>
+			
+
+				<div class="js-timerentry timerentry expanded-vis" >
+					<div class="form-row"  data-nodetype="Active">
+						<label for="node-input-sc3Active" >Active</label>
+						<input type="checkbox" id="node-input-sc3Active" class="js-timer-active" />
+					</div>
+					<div class="form-row"  data-nodetype="Action">
+						<label for="node-input-sc3Action" >Action:</label>
+						<select id="node-input-sc3Action" >
+							<option value="1">On</option>
+							<option value="0">Off</option>
+						</select>
+					</div>
+					<div class="form-row" data-nodetype="Timetype">
+						<label for="node-input-sc3Timetype" >Time Type</label>
+						<select id="node-input-sc3Timetype"  class="js-timetype">
+							<option value="time">Time</option>
+							<option value="zman">Zman</option>
+						</select>
+					</div>
+					<div class="form-row time-selection"  data-nodetype="Time">
+						<label for="node-input-sc3Time" style="width:40px">Time:</label>
+						<input type="time" id="node-input-sc3Time" style="width:110px"/>
+					</div>
+					<div class="form-row zman-selection"  data-nodetype="Zman">
+						<label for="node-input-sc3Zman" style="width:56px">Zman <i title="Avaliable Zmanim are the basic zmanim from the KosherZmanim lib" class="fa fa-question-circle"></i>: </label>
+						<select id="node-input-sc3Zman" style="width:138px">
+							<option value="BeginAstronomicalTwilight">BeginAstronomicalTwilight</option>
+							<option value="AlosHashachar">AlosHashachar</option>
+							<option value="Alos72">Alos72</option>
+							<option value="BeginNauticalTwilight">BeginNauticalTwilight</option>
+							<option value="BeginCivilTwilight">BeginCivilTwilight</option>
+							<option value="SeaLevelSunrise">SeaLevelSunrise</option>
+							<option value="Sunrise">Sunrise</option>
+							<option value="SofZmanShmaMGA">SofZmanShmaMGA</option>
+							<option value="SofZmanShmaGRA">SofZmanShmaGRA</option>
+							<option value="SofZmanTfilaMGA">SofZmanTfilaMGA</option>
+							<option value="SofZmanTfilaGRA">SofZmanTfilaGRA</option>
+							<option value="Chatzos">Chatzos</option>
+							<option value="CandleLighting">CandleLighting</option>
+							<option value="SeaLevelSunset">SeaLevelSunset</option>
+							<option value="Sunset">Sunset</option>
+							<option value="EndCivilTwilight">EndCivilTwilight</option>
+							<option value="Tzais">Tzais</option>
+							<option value="EndNauticalTwilight">EndNauticalTwilight</option>
+							<option value="Tzais72">Tzais72</option>
+							<option value="EndAstronomicalTwilight">EndAstronomicalTwilight</option>
+						</select>
+					</div>
+					<div class="form-row  zman-selection"  data-nodetype="Zmanoffset">
+						<label for="node-input-sc3Zmanoffset" style="width:40px;">Offset:</label>
+						<input type="number" id="node-input-sc3Zmanoffset" placeholder="0">
+						<select id="node-input-sc3Zmanoffsettype" name="node-input-sc3Zmanoffsettype">
+							<option value="1000">Seconds</option>
+							<option value="60000" selected="selected">Minutes</option>
+							<option value="3600000">Hours</option>
+						</select>
+					</div>
+				</div>
+			
+
+				<div class="js-timerentry timerentry expanded-vis" >
+					<div class="form-row"  data-nodetype="Active">
+						<label for="node-input-sc4Active" >Active</label>
+						<input type="checkbox" id="node-input-sc4Active" class="js-timer-active" />
+					</div>
+					<div class="form-row"  data-nodetype="Action">
+						<label for="node-input-sc4Action" >Action:</label>
+						<select id="node-input-sc4Action" >
+							<option value="1">On</option>
+							<option value="0">Off</option>
+						</select>
+					</div>
+					<div class="form-row" data-nodetype="Timetype">
+						<label for="node-input-sc4Timetype" >Time Type</label>
+						<select id="node-input-sc4Timetype"  class="js-timetype">
+							<option value="time">Time</option>
+							<option value="zman">Zman</option>
+						</select>
+					</div>
+					<div class="form-row time-selection"  data-nodetype="Time">
+						<label for="node-input-sc4Time" style="width:40px">Time:</label>
+						<input type="time" id="node-input-sc4Time" style="width:110px"/>
+					</div>
+					<div class="form-row zman-selection"  data-nodetype="Zman">
+						<label for="node-input-sc4Zman" style="width:56px">Zman <i title="Avaliable Zmanim are the basic zmanim from the KosherZmanim lib" class="fa fa-question-circle"></i>: </label>
+						<select id="node-input-sc4Zman" style="width:138px">
+							<option value="BeginAstronomicalTwilight">BeginAstronomicalTwilight</option>
+							<option value="AlosHashachar">AlosHashachar</option>
+							<option value="Alos72">Alos72</option>
+							<option value="BeginNauticalTwilight">BeginNauticalTwilight</option>
+							<option value="BeginCivilTwilight">BeginCivilTwilight</option>
+							<option value="SeaLevelSunrise">SeaLevelSunrise</option>
+							<option value="Sunrise">Sunrise</option>
+							<option value="SofZmanShmaMGA">SofZmanShmaMGA</option>
+							<option value="SofZmanShmaGRA">SofZmanShmaGRA</option>
+							<option value="SofZmanTfilaMGA">SofZmanTfilaMGA</option>
+							<option value="SofZmanTfilaGRA">SofZmanTfilaGRA</option>
+							<option value="Chatzos">Chatzos</option>
+							<option value="CandleLighting">CandleLighting</option>
+							<option value="SeaLevelSunset">SeaLevelSunset</option>
+							<option value="Sunset">Sunset</option>
+							<option value="EndCivilTwilight">EndCivilTwilight</option>
+							<option value="Tzais">Tzais</option>
+							<option value="EndNauticalTwilight">EndNauticalTwilight</option>
+							<option value="Tzais72">Tzais72</option>
+							<option value="EndAstronomicalTwilight">EndAstronomicalTwilight</option>
+						</select>
+					</div>
+					<div class="form-row  zman-selection"  data-nodetype="Zmanoffset">
+						<label for="node-input-sc4Zmanoffset" style="width:40px;">Offset:</label>
+						<input type="number" id="node-input-sc4Zmanoffset" placeholder="0">
+						<select id="node-input-sc4Zmanoffsettype" name="node-input-sc4Zmanoffsettype">
+							<option value="1000">Seconds</option>
+							<option value="60000" selected="selected">Minutes</option>
+							<option value="3600000">Hours</option>
+						</select>
+					</div>
+				</div>
+			
+
+				<div class="js-timerentry timerentry expanded-vis" >
+					<div class="form-row"  data-nodetype="Active">
+						<label for="node-input-sc5Active" >Active</label>
+						<input type="checkbox" id="node-input-sc5Active" class="js-timer-active" />
+					</div>
+					<div class="form-row"  data-nodetype="Action">
+						<label for="node-input-sc5Action" >Action:</label>
+						<select id="node-input-sc5Action" >
+							<option value="1">On</option>
+							<option value="0">Off</option>
+						</select>
+					</div>
+					<div class="form-row" data-nodetype="Timetype">
+						<label for="node-input-sc5Timetype" >Time Type</label>
+						<select id="node-input-sc5Timetype"  class="js-timetype">
+							<option value="time">Time</option>
+							<option value="zman">Zman</option>
+						</select>
+					</div>
+					<div class="form-row time-selection"  data-nodetype="Time">
+						<label for="node-input-sc5Time" style="width:40px">Time:</label>
+						<input type="time" id="node-input-sc5Time" style="width:110px"/>
+					</div>
+					<div class="form-row zman-selection"  data-nodetype="Zman">
+						<label for="node-input-sc5Zman" style="width:56px">Zman <i title="Avaliable Zmanim are the basic zmanim from the KosherZmanim lib" class="fa fa-question-circle"></i>: </label>
+						<select id="node-input-sc5Zman" style="width:138px">
+							<option value="BeginAstronomicalTwilight">BeginAstronomicalTwilight</option>
+							<option value="AlosHashachar">AlosHashachar</option>
+							<option value="Alos72">Alos72</option>
+							<option value="BeginNauticalTwilight">BeginNauticalTwilight</option>
+							<option value="BeginCivilTwilight">BeginCivilTwilight</option>
+							<option value="SeaLevelSunrise">SeaLevelSunrise</option>
+							<option value="Sunrise">Sunrise</option>
+							<option value="SofZmanShmaMGA">SofZmanShmaMGA</option>
+							<option value="SofZmanShmaGRA">SofZmanShmaGRA</option>
+							<option value="SofZmanTfilaMGA">SofZmanTfilaMGA</option>
+							<option value="SofZmanTfilaGRA">SofZmanTfilaGRA</option>
+							<option value="Chatzos">Chatzos</option>
+							<option value="CandleLighting">CandleLighting</option>
+							<option value="SeaLevelSunset">SeaLevelSunset</option>
+							<option value="Sunset">Sunset</option>
+							<option value="EndCivilTwilight">EndCivilTwilight</option>
+							<option value="Tzais">Tzais</option>
+							<option value="EndNauticalTwilight">EndNauticalTwilight</option>
+							<option value="Tzais72">Tzais72</option>
+							<option value="EndAstronomicalTwilight">EndAstronomicalTwilight</option>
+						</select>
+					</div>
+					<div class="form-row  zman-selection"  data-nodetype="Zmanoffset">
+						<label for="node-input-sc5Zmanoffset" style="width:40px;">Offset:</label>
+						<input type="number" id="node-input-sc5Zmanoffset" placeholder="0">
+						<select id="node-input-sc5Zmanoffsettype" name="node-input-sc5Zmanoffsettype">
+							<option value="1000">Seconds</option>
+							<option value="60000" selected="selected">Minutes</option>
+							<option value="3600000">Hours</option>
+						</select>
+					</div>
+				</div>
+			
+
+				<div class="js-timerentry timerentry expanded-vis" >
+					<div class="form-row"  data-nodetype="Active">
+						<label for="node-input-sc6Active" >Active</label>
+						<input type="checkbox" id="node-input-sc6Active" class="js-timer-active" />
+					</div>
+					<div class="form-row"  data-nodetype="Action">
+						<label for="node-input-sc6Action" >Action:</label>
+						<select id="node-input-sc6Action" >
+							<option value="1">On</option>
+							<option value="0">Off</option>
+						</select>
+					</div>
+					<div class="form-row" data-nodetype="Timetype">
+						<label for="node-input-sc6Timetype" >Time Type</label>
+						<select id="node-input-sc6Timetype"  class="js-timetype">
+							<option value="time">Time</option>
+							<option value="zman">Zman</option>
+						</select>
+					</div>
+					<div class="form-row time-selection"  data-nodetype="Time">
+						<label for="node-input-sc6Time" style="width:40px">Time:</label>
+						<input type="time" id="node-input-sc6Time" style="width:110px"/>
+					</div>
+					<div class="form-row zman-selection"  data-nodetype="Zman">
+						<label for="node-input-sc6Zman" style="width:56px">Zman <i title="Avaliable Zmanim are the basic zmanim from the KosherZmanim lib" class="fa fa-question-circle"></i>: </label>
+						<select id="node-input-sc6Zman" style="width:138px">
+							<option value="BeginAstronomicalTwilight">BeginAstronomicalTwilight</option>
+							<option value="AlosHashachar">AlosHashachar</option>
+							<option value="Alos72">Alos72</option>
+							<option value="BeginNauticalTwilight">BeginNauticalTwilight</option>
+							<option value="BeginCivilTwilight">BeginCivilTwilight</option>
+							<option value="SeaLevelSunrise">SeaLevelSunrise</option>
+							<option value="Sunrise">Sunrise</option>
+							<option value="SofZmanShmaMGA">SofZmanShmaMGA</option>
+							<option value="SofZmanShmaGRA">SofZmanShmaGRA</option>
+							<option value="SofZmanTfilaMGA">SofZmanTfilaMGA</option>
+							<option value="SofZmanTfilaGRA">SofZmanTfilaGRA</option>
+							<option value="Chatzos">Chatzos</option>
+							<option value="CandleLighting">CandleLighting</option>
+							<option value="SeaLevelSunset">SeaLevelSunset</option>
+							<option value="Sunset">Sunset</option>
+							<option value="EndCivilTwilight">EndCivilTwilight</option>
+							<option value="Tzais">Tzais</option>
+							<option value="EndNauticalTwilight">EndNauticalTwilight</option>
+							<option value="Tzais72">Tzais72</option>
+							<option value="EndAstronomicalTwilight">EndAstronomicalTwilight</option>
+						</select>
+					</div>
+					<div class="form-row  zman-selection"  data-nodetype="Zmanoffset">
+						<label for="node-input-sc6Zmanoffset" style="width:40px;">Offset:</label>
+						<input type="number" id="node-input-sc6Zmanoffset" placeholder="0">
+						<select id="node-input-sc6Zmanoffsettype" name="node-input-sc6Zmanoffsettype">
+							<option value="1000">Seconds</option>
+							<option value="60000" selected="selected">Minutes</option>
+							<option value="3600000">Hours</option>
+						</select>
+					</div>
+				</div>
+			
+
+				<div class="js-timerentry timerentry expanded-vis" >
+					<div class="form-row"  data-nodetype="Active">
+						<label for="node-input-sc7Active" >Active</label>
+						<input type="checkbox" id="node-input-sc7Active" class="js-timer-active" />
+					</div>
+					<div class="form-row"  data-nodetype="Action">
+						<label for="node-input-sc7Action" >Action:</label>
+						<select id="node-input-sc7Action" >
+							<option value="1">On</option>
+							<option value="0">Off</option>
+						</select>
+					</div>
+					<div class="form-row" data-nodetype="Timetype">
+						<label for="node-input-sc7Timetype" >Time Type</label>
+						<select id="node-input-sc7Timetype"  class="js-timetype">
+							<option value="time">Time</option>
+							<option value="zman">Zman</option>
+						</select>
+					</div>
+					<div class="form-row time-selection"  data-nodetype="Time">
+						<label for="node-input-sc7Time" style="width:40px">Time:</label>
+						<input type="time" id="node-input-sc7Time" style="width:110px"/>
+					</div>
+					<div class="form-row zman-selection"  data-nodetype="Zman">
+						<label for="node-input-sc7Zman" style="width:56px">Zman <i title="Avaliable Zmanim are the basic zmanim from the KosherZmanim lib" class="fa fa-question-circle"></i>: </label>
+						<select id="node-input-sc7Zman" style="width:138px">
+							<option value="BeginAstronomicalTwilight">BeginAstronomicalTwilight</option>
+							<option value="AlosHashachar">AlosHashachar</option>
+							<option value="Alos72">Alos72</option>
+							<option value="BeginNauticalTwilight">BeginNauticalTwilight</option>
+							<option value="BeginCivilTwilight">BeginCivilTwilight</option>
+							<option value="SeaLevelSunrise">SeaLevelSunrise</option>
+							<option value="Sunrise">Sunrise</option>
+							<option value="SofZmanShmaMGA">SofZmanShmaMGA</option>
+							<option value="SofZmanShmaGRA">SofZmanShmaGRA</option>
+							<option value="SofZmanTfilaMGA">SofZmanTfilaMGA</option>
+							<option value="SofZmanTfilaGRA">SofZmanTfilaGRA</option>
+							<option value="Chatzos">Chatzos</option>
+							<option value="CandleLighting">CandleLighting</option>
+							<option value="SeaLevelSunset">SeaLevelSunset</option>
+							<option value="Sunset">Sunset</option>
+							<option value="EndCivilTwilight">EndCivilTwilight</option>
+							<option value="Tzais">Tzais</option>
+							<option value="EndNauticalTwilight">EndNauticalTwilight</option>
+							<option value="Tzais72">Tzais72</option>
+							<option value="EndAstronomicalTwilight">EndAstronomicalTwilight</option>
+						</select>
+					</div>
+					<div class="form-row  zman-selection"  data-nodetype="Zmanoffset">
+						<label for="node-input-sc7Zmanoffset" style="width:40px;">Offset:</label>
+						<input type="number" id="node-input-sc7Zmanoffset" placeholder="0">
+						<select id="node-input-sc7Zmanoffsettype" name="node-input-sc7Zmanoffsettype">
+							<option value="1000">Seconds</option>
+							<option value="60000" selected="selected">Minutes</option>
+							<option value="3600000">Hours</option>
+						</select>
+					</div>
+				</div>
+			
+
+				<div class="js-timerentry timerentry expanded-vis" >
+					<div class="form-row"  data-nodetype="Active">
+						<label for="node-input-sc8Active" >Active</label>
+						<input type="checkbox" id="node-input-sc8Active" class="js-timer-active" />
+					</div>
+					<div class="form-row"  data-nodetype="Action">
+						<label for="node-input-sc8Action" >Action:</label>
+						<select id="node-input-sc8Action" >
+							<option value="1">On</option>
+							<option value="0">Off</option>
+						</select>
+					</div>
+					<div class="form-row" data-nodetype="Timetype">
+						<label for="node-input-sc8Timetype" >Time Type</label>
+						<select id="node-input-sc8Timetype"  class="js-timetype">
+							<option value="time">Time</option>
+							<option value="zman">Zman</option>
+						</select>
+					</div>
+					<div class="form-row time-selection"  data-nodetype="Time">
+						<label for="node-input-sc8Time" style="width:40px">Time:</label>
+						<input type="time" id="node-input-sc8Time" style="width:110px"/>
+					</div>
+					<div class="form-row zman-selection"  data-nodetype="Zman">
+						<label for="node-input-sc8Zman" style="width:56px">Zman <i title="Avaliable Zmanim are the basic zmanim from the KosherZmanim lib" class="fa fa-question-circle"></i>: </label>
+						<select id="node-input-sc8Zman" style="width:138px">
+							<option value="BeginAstronomicalTwilight">BeginAstronomicalTwilight</option>
+							<option value="AlosHashachar">AlosHashachar</option>
+							<option value="Alos72">Alos72</option>
+							<option value="BeginNauticalTwilight">BeginNauticalTwilight</option>
+							<option value="BeginCivilTwilight">BeginCivilTwilight</option>
+							<option value="SeaLevelSunrise">SeaLevelSunrise</option>
+							<option value="Sunrise">Sunrise</option>
+							<option value="SofZmanShmaMGA">SofZmanShmaMGA</option>
+							<option value="SofZmanShmaGRA">SofZmanShmaGRA</option>
+							<option value="SofZmanTfilaMGA">SofZmanTfilaMGA</option>
+							<option value="SofZmanTfilaGRA">SofZmanTfilaGRA</option>
+							<option value="Chatzos">Chatzos</option>
+							<option value="CandleLighting">CandleLighting</option>
+							<option value="SeaLevelSunset">SeaLevelSunset</option>
+							<option value="Sunset">Sunset</option>
+							<option value="EndCivilTwilight">EndCivilTwilight</option>
+							<option value="Tzais">Tzais</option>
+							<option value="EndNauticalTwilight">EndNauticalTwilight</option>
+							<option value="Tzais72">Tzais72</option>
+							<option value="EndAstronomicalTwilight">EndAstronomicalTwilight</option>
+						</select>
+					</div>
+					<div class="form-row  zman-selection"  data-nodetype="Zmanoffset">
+						<label for="node-input-sc8Zmanoffset" style="width:40px;">Offset:</label>
+						<input type="number" id="node-input-sc8Zmanoffset" placeholder="0">
+						<select id="node-input-sc8Zmanoffsettype" name="node-input-sc8Zmanoffsettype">
+							<option value="1000">Seconds</option>
+							<option value="60000" selected="selected">Minutes</option>
+							<option value="3600000">Hours</option>
+						</select>
+					</div>
+				</div>
+			
+
+				<div class="js-timerentry timerentry expanded-vis" >
+					<div class="form-row"  data-nodetype="Active">
+						<label for="node-input-sc9Active" >Active</label>
+						<input type="checkbox" id="node-input-sc9Active" class="js-timer-active" />
+					</div>
+					<div class="form-row"  data-nodetype="Action">
+						<label for="node-input-sc9Action" >Action:</label>
+						<select id="node-input-sc9Action" >
+							<option value="1">On</option>
+							<option value="0">Off</option>
+						</select>
+					</div>
+					<div class="form-row" data-nodetype="Timetype">
+						<label for="node-input-sc9Timetype" >Time Type</label>
+						<select id="node-input-sc9Timetype"  class="js-timetype">
+							<option value="time">Time</option>
+							<option value="zman">Zman</option>
+						</select>
+					</div>
+					<div class="form-row time-selection"  data-nodetype="Time">
+						<label for="node-input-sc9Time" style="width:40px">Time:</label>
+						<input type="time" id="node-input-sc9Time" style="width:110px"/>
+					</div>
+					<div class="form-row zman-selection"  data-nodetype="Zman">
+						<label for="node-input-sc9Zman" style="width:56px">Zman <i title="Avaliable Zmanim are the basic zmanim from the KosherZmanim lib" class="fa fa-question-circle"></i>: </label>
+						<select id="node-input-sc9Zman" style="width:138px">
+							<option value="BeginAstronomicalTwilight">BeginAstronomicalTwilight</option>
+							<option value="AlosHashachar">AlosHashachar</option>
+							<option value="Alos72">Alos72</option>
+							<option value="BeginNauticalTwilight">BeginNauticalTwilight</option>
+							<option value="BeginCivilTwilight">BeginCivilTwilight</option>
+							<option value="SeaLevelSunrise">SeaLevelSunrise</option>
+							<option value="Sunrise">Sunrise</option>
+							<option value="SofZmanShmaMGA">SofZmanShmaMGA</option>
+							<option value="SofZmanShmaGRA">SofZmanShmaGRA</option>
+							<option value="SofZmanTfilaMGA">SofZmanTfilaMGA</option>
+							<option value="SofZmanTfilaGRA">SofZmanTfilaGRA</option>
+							<option value="Chatzos">Chatzos</option>
+							<option value="CandleLighting">CandleLighting</option>
+							<option value="SeaLevelSunset">SeaLevelSunset</option>
+							<option value="Sunset">Sunset</option>
+							<option value="EndCivilTwilight">EndCivilTwilight</option>
+							<option value="Tzais">Tzais</option>
+							<option value="EndNauticalTwilight">EndNauticalTwilight</option>
+							<option value="Tzais72">Tzais72</option>
+							<option value="EndAstronomicalTwilight">EndAstronomicalTwilight</option>
+						</select>
+					</div>
+					<div class="form-row  zman-selection"  data-nodetype="Zmanoffset">
+						<label for="node-input-sc9Zmanoffset" style="width:40px;">Offset:</label>
+						<input type="number" id="node-input-sc9Zmanoffset" placeholder="0">
+						<select id="node-input-sc9Zmanoffsettype" name="node-input-sc9Zmanoffsettype">
+							<option value="1000">Seconds</option>
+							<option value="60000" selected="selected">Minutes</option>
+							<option value="3600000">Hours</option>
+						</select>
+					</div>
+				</div>
+			
+
+				<div class="js-timerentry timerentry expanded-vis" >
+					<div class="form-row"  data-nodetype="Active">
+						<label for="node-input-sc10Active" >Active</label>
+						<input type="checkbox" id="node-input-sc10Active" class="js-timer-active" />
+					</div>
+					<div class="form-row"  data-nodetype="Action">
+						<label for="node-input-sc10Action" >Action:</label>
+						<select id="node-input-sc10Action" >
+							<option value="1">On</option>
+							<option value="0">Off</option>
+						</select>
+					</div>
+					<div class="form-row" data-nodetype="Timetype">
+						<label for="node-input-sc10Timetype" >Time Type</label>
+						<select id="node-input-sc10Timetype"  class="js-timetype">
+							<option value="time">Time</option>
+							<option value="zman">Zman</option>
+						</select>
+					</div>
+					<div class="form-row time-selection"  data-nodetype="Time">
+						<label for="node-input-sc10Time" style="width:40px">Time:</label>
+						<input type="time" id="node-input-sc10Time" style="width:110px"/>
+					</div>
+					<div class="form-row zman-selection"  data-nodetype="Zman">
+						<label for="node-input-sc10Zman" style="width:56px">Zman <i title="Avaliable Zmanim are the basic zmanim from the KosherZmanim lib" class="fa fa-question-circle"></i>: </label>
+						<select id="node-input-sc10Zman" style="width:138px">
+							<option value="BeginAstronomicalTwilight">BeginAstronomicalTwilight</option>
+							<option value="AlosHashachar">AlosHashachar</option>
+							<option value="Alos72">Alos72</option>
+							<option value="BeginNauticalTwilight">BeginNauticalTwilight</option>
+							<option value="BeginCivilTwilight">BeginCivilTwilight</option>
+							<option value="SeaLevelSunrise">SeaLevelSunrise</option>
+							<option value="Sunrise">Sunrise</option>
+							<option value="SofZmanShmaMGA">SofZmanShmaMGA</option>
+							<option value="SofZmanShmaGRA">SofZmanShmaGRA</option>
+							<option value="SofZmanTfilaMGA">SofZmanTfilaMGA</option>
+							<option value="SofZmanTfilaGRA">SofZmanTfilaGRA</option>
+							<option value="Chatzos">Chatzos</option>
+							<option value="CandleLighting">CandleLighting</option>
+							<option value="SeaLevelSunset">SeaLevelSunset</option>
+							<option value="Sunset">Sunset</option>
+							<option value="EndCivilTwilight">EndCivilTwilight</option>
+							<option value="Tzais">Tzais</option>
+							<option value="EndNauticalTwilight">EndNauticalTwilight</option>
+							<option value="Tzais72">Tzais72</option>
+							<option value="EndAstronomicalTwilight">EndAstronomicalTwilight</option>
+						</select>
+					</div>
+					<div class="form-row  zman-selection"  data-nodetype="Zmanoffset">
+						<label for="node-input-sc10Zmanoffset" style="width:40px;">Offset:</label>
+						<input type="number" id="node-input-sc10Zmanoffset" placeholder="0">
+						<select id="node-input-sc10Zmanoffsettype" name="node-input-sc10Zmanoffsettype">
+							<option value="1000">Seconds</option>
+							<option value="60000" selected="selected">Minutes</option>
+							<option value="3600000">Hours</option>
+						</select>
+					</div>
+				</div>
+			
+	</div>
+	
+	<hr/>
+	<div id="dates-container" class="expend-container collapsed">
+		<h4 class="expand-collapse"> Set Schedule Dates
+			<i class="fa fa-chevron-down collapsed-vis"></i>
+			<i class="fa fa-chevron-up expanded-vis"></i>
+		</h4>
+		<div class="js-dateentry daterentry expanded-vis" >
+		</div>
+	</div>
+</script>
+
+<script type="text/html" data-help-name="jewish-timer">
+
+</script>

@@ -1,0 +1,237 @@
+<script type="text/javascript">
+	const TIMER_COUNT = /* REPLACE_TIMER_COUNT */;
+	const DAYS_COUNT = /* REPLACE_DAYS_COUNT */;
+	const timerDefaults = (()=>{
+		const obj = {};
+		for(let i=0;i<TIMER_COUNT;i++){
+			const id = i+1;
+			obj[`sc${id}Active`] = {value: false};
+			obj[`sc${id}Action`] = {value:0};
+			obj[`sc${id}Timetype`] = {value:"time"},
+			obj[`sc${id}Time`] = {value: "00:00"},
+			obj[`sc${id}Zman`] = {value:"AlosHashachar"},
+			obj[`sc${id}Zmanoffset`] = {value:0},
+			obj[`sc${id}Zmanoffsettype`] = {value:60000}
+		}
+		return obj;
+	})();
+
+    RED.nodes.registerType('jewish-timer',{
+        category: 'function',
+        color: '#a6bbcf',
+        defaults: {
+            name: {value:""},
+			comment: {value: ""},
+			lat: {value: 0, required:true},
+			lon: {value: 0, required:true},
+			diaspora: {value:true},
+			topic: {value:""},
+			onMsg: {value: "ON"},
+			offMsg: {value: "OFF"},
+			...timerDefaults,
+			
+			
+			startoffset: {value:0},
+			endoffset: {value:72},
+			delay: {value:0},
+			delaytype: {value:60000}
+        },
+        inputs:1,
+        outputs:2,
+		outputLabels: ["In Effect", "Not in Effect"],
+        icon: "switch.png",
+        label: function() {
+            return this.name||"Jewish Timer";
+        },
+		oneditprepare: function() {
+            if (($("#node-input-lat").val() === "0") && ($("#node-input-lon").val() === "0")) {
+                if ("geolocation" in navigator) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        $("#node-input-lat").val(Number(position.coords.latitude.toFixed(5)));
+                        $("#node-input-lon").val(Number(position.coords.longitude.toFixed(5)));
+                    });
+                }
+            }
+			$(".expand-collapse").click((e)=>{
+				const cont = $(e.target).parents(".expend-container");
+				if(cont.hasClass("expanded")){
+					cont.removeClass("expanded").addClass("collapsed")
+				}else{
+					cont.removeClass("collapsed").addClass("expanded")
+				}
+			});
+			$(".js-timetype").change(e=>{
+				const val = e.target.value;
+				const cont = $(e.target).parents(".js-timerentry").removeClass("timertype-time timertype-zman").addClass(`timertype-${val}`);
+			})
+			$(".js-timer-active").change(e=>{
+				if(e.target.checked){
+					$(e.target).parents(".js-timerentry").addClass("active");
+				} else {
+					$(e.target).parents(".js-timerentry").removeClass("active");
+				}
+			});
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="jewish-timer">
+	<style>
+		div.checkbox-field{
+			max-width:200px;
+		}
+		div.checkbox-field input {
+			width:20px;
+			margin-bottom:4px;
+		}
+		.large-label {
+			width:100%;
+		}
+	</style>
+	<div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Jewish Timer">
+    </div>
+	<div class="form-row">
+        <label for="node-input-comment"><i class="fa fa-tag"></i> Comment</label>
+        <input type="text" id="node-input-comment" placeholder="Jewish Timer">
+    </div>
+    <div class="form-row">
+        <label for="node-input-lat"><i class="fa fa-compass"></i> Lat</label>
+        <input type="text" id="node-input-lat" placeholder="0">
+	</div>
+    <div class="form-row">
+        <label for="node-input-lon"><i class="fa fa-compass"></i> Lon</label>
+        <input type="text" id="node-input-lon" placeholder="0">
+    </div>
+	<div class="form-row checkbox-field">
+		<label for="node-input-diaspora"><i class="fa fa-map"></i> Diaspora</label>
+        <input type="checkbox" checked id="node-input-diaspora" style="width:20px;margin-bottom:4px;">
+    </div>
+	<div class="form-row">
+		<label for="node-input-topic"><i class="fa fa-tag"></i>TOPIC</label>
+		<input type="text" id="node-input-topic" placeholder="MQTT Topic" />
+	</div>
+	<div class="form-row">
+		<label for="node-input-onmsg"><i class="fa fa-envelop"></i>On MSG</label>
+		<input type="text" id="node-input-onmsg" placeholder="ON" value="ON" />
+	</div>
+    <div class="form-row">
+		<label for="node-input-offmsg"><i class="fa fa-envelop"></i>Off MSG</label>
+		<input type="text" id="node-input-offmsg" placeholder="OFF" value="OFF" />
+	</div>
+	<hr/>
+	<style>
+		.expend-container.collapsed .expanded-vis {
+			display: none!important;
+		}
+		.expend-container.expanded .collapsed-vis{
+			display: none!important;
+		}
+		.expand-collapse {
+			cursor: pointer;
+		}
+		.timertype-time .zman-selection{
+			display: none!important;
+		}
+		.timertype-zman .time-selection{
+			display: none!important;
+		}
+		.timerentry{
+			opacity: .5;
+		}
+		.timerentry.active{
+			opacity: 1;
+		}
+		.timerentry{
+			margin: 10px 0px;
+			background-color: #f2f2f2;
+			padding: 10px;
+		}
+		.timerentry [data-nodetype="Active"]{
+			width:18%;
+			display:inline-block;
+		}
+		.timerentry [data-nodetype="Active"] label{
+			width:40px;
+		}
+		.timerentry [data-nodetype="Active"] input{
+			width:20px;
+			vertical-align:top;
+		}
+		.timerentry [data-nodetype="Action"] {
+			width:32%;
+			display:inline-block;
+		}
+		.timerentry [data-nodetype="Action"] label{
+			width:44px;
+		}
+		.timerentry [data-nodetype="Action"] select{
+			width: 80px;
+		}
+		.timerentry [data-nodetype="Timetype"]{
+			width:40%;
+			padding-left:14px;
+			display:inline-block;
+		}
+		.timerentry [data-nodetype="Timetype"] label{
+			width:70px;
+		}
+		.timerentry [data-nodetype="Timetype"] select{
+			width:80px;
+		}
+		.timerentry [data-nodetype="Time"]{
+			width:40%;
+			display:inline-block;
+		}
+		.timerentry [data-nodetype="Time"] label{
+			width:40px;
+		}
+		.timerentry [data-nodetype="Time"] input{
+			width:110px;
+		}
+		.timerentry [data-nodetype="Zman"]{
+			width:48%;
+			display:inline-block;
+		}
+		.timerentry [data-nodetype="Zman"] label{
+			width:56px;
+		}
+		.timerentry [data-nodetype="Zman"] select{
+			width:138px;
+		}
+		.timerentry [data-nodetype="Zmanoffset"]{
+			display:inline-block;
+		}
+		.timerentry [data-nodetype="Zmanoffset"] label{
+			width:40px;
+		}
+		.timerentry [data-nodetype="Zmanoffset"] input{
+			width:58px;
+		}
+		.timerentry [data-nodetype="Zmanoffset"] select{
+			width:110px;
+		}
+	</style>
+	<div id="schedule-container" class="expend-container collapsed">
+		<h4 class="expand-collapse"> Set Schedule Times
+			<i class="fa fa-chevron-down collapsed-vis"></i>
+			<i class="fa fa-chevron-up expanded-vis"></i>
+		</h4>
+		<!-- REPLACE_TIMER_HTML -->
+	</div>
+	
+	<hr/>
+	<div id="dates-container" class="expend-container collapsed">
+		<h4 class="expand-collapse"> Set Schedule Dates
+			<i class="fa fa-chevron-down collapsed-vis"></i>
+			<i class="fa fa-chevron-up expanded-vis"></i>
+		</h4>
+		<div class="js-dateentry daterentry expanded-vis" >
+		</div>
+	</div>
+</script>
+
+<script type="text/html" data-help-name="jewish-timer">
+
+</script>
