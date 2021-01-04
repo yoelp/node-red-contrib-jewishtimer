@@ -85,7 +85,7 @@ module.exports = {
 						<select id="node-input-sc${idx}DateAction" >
 							<option value="1" class="reginclude">Include</option>
 							<option value="2" class="specialinclude">Include</option>
-							<option value="2" class="onlyinclude">Include Only</option>
+							<option value="2" class="onlyinclude">Only Include</option>
 							<option value="0">Exclude</option>
 						</select>
 					</div>
