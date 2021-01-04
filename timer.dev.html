@@ -16,8 +16,41 @@
 		for(let i=0;i<DAYS_COUNT;i++){
 			const id = i+1;
 			obj[`sc${id}DateActive`] = {value: false};
-			obj[`sc${id}DateAction`] = {value:0};
+			// obj[`sc${id}DateAction`] = {value:0};
 			obj[`sc${id}Datetype`] = {value:"weekday"};
+			obj[`sc${id}Sun`] = {value:1};
+			obj[`sc${id}Mon`] = {value:1};
+			obj[`sc${id}Tue`] = {value:1};
+			obj[`sc${id}Wed`] = {value:1};
+			obj[`sc${id}Thu`] = {value:1};
+			obj[`sc${id}Fri`] = {value:1};
+			obj[`sc${id}Sat`] = {value:1};
+			obj[`sc${id}Jan`] = {value:1};
+			obj[`sc${id}Feb`] = {value:1};
+			obj[`sc${id}Mar`] = {value:1};
+			obj[`sc${id}Apr`] = {value:1};
+			obj[`sc${id}May`] = {value:1};
+			obj[`sc${id}Jun`] = {value:1};
+			obj[`sc${id}Jul`] = {value:1};
+			obj[`sc${id}Aug`] = {value:1};
+			obj[`sc${id}Sep`] = {value:1};
+			obj[`sc${id}Oct`] = {value:1};
+			obj[`sc${id}Nov`] = {value:1};
+			obj[`sc${id}Dec`] = {value:1};
+			obj[`sc${id}Nisan`] = {value:1};
+			obj[`sc${id}Iyar`] = {value:1};
+			obj[`sc${id}Sivan`] = {value:1};
+			obj[`sc${id}Tamuz`] = {value:1};
+			obj[`sc${id}Av`] = {value:1};
+			obj[`sc${id}Elul`] = {value:1};
+			obj[`sc${id}Tishri`] = {value:1};
+			obj[`sc${id}Heshvan`] = {value:1};
+			obj[`sc${id}Kislev`] = {value:1};
+			obj[`sc${id}Tevet`] = {value:1};
+			obj[`sc${id}Shvat`] = {value:1};
+			obj[`sc${id}Adar1`] = {value:1};
+			obj[`sc${id}Adar2`] = {value:1};
+			
 		}
 		return obj;
 	})();
@@ -68,17 +101,17 @@
 			});
 			$(".js-timetype").change(e=>{
 				const val = e.target.value;
-				$(e.target).parents(".js-timerentry").removeClass("timertype-time timertype-zman").addClass(`timertype-${val}`);
+				$(e.target).parents(".js-entry").removeClass("timertype-time timertype-zman").addClass(`timertype-${val}`);
 			});
 			$(".js-datetype").change(e=>{
 				const val = e.target.value;
-				$(e.target).parents(".js-dateentry").removeClass("datetype-weekday datetype-monthday").addClass(`datetype-${val}`);
+				$(e.target).parents(".js-entry").removeClass("datetype-weekday datetype-jmonthday datetype-gmonthday").addClass(`datetype-${val}`);
 			});
-			$(".js-timer-active").change(e=>{
+			$(".js-active").change(e=>{
 				if(e.target.checked){
-					$(e.target).parents(".js-timerentry").addClass("active");
+					$(e.target).parents(".js-entry").addClass("active");
 				} else {
-					$(e.target).parents(".js-timerentry").removeClass("active");
+					$(e.target).parents(".js-entry").removeClass("active");
 				}
 			});
         }
@@ -158,36 +191,36 @@
 			background-color: #f2f2f2;
 			padding: 10px;
 		}
-		.entry [data-nodetype="Active"]{
+		.entry [data-nodetype$="Active"]{
 			width:18%;
 			display:inline-block;
 		}
-		.entry [data-nodetype="Active"] label{
+		.entry [data-nodetype$="Active"] label{
 			width:40px;
 		}
-		.entry [data-nodetype="Active"] input{
+		.entry [data-nodetype$="Active"] input{
 			width:20px;
 			vertical-align:top;
 		}
-		.entry [data-nodetype="Action"] {
+		.entry [data-nodetype$="Action"] {
 			width:32%;
 			display:inline-block;
 		}
-		.entry [data-nodetype="Action"] label{
+		.entry [data-nodetype$="Action"] label{
 			width:44px;
 		}
-		.entry [data-nodetype="Action"] select{
+		.entry [data-nodetype$="Action"] select{
 			width: 80px;
 		}
-		.entry [data-nodetype="Timetype"]{
+		.entry [data-nodetype="Timetype"], .entry [data-nodetype="Datetype"]{
 			width:40%;
 			padding-left:14px;
 			display:inline-block;
 		}
-		.entry [data-nodetype="Timetype"] label{
+		.entry [data-nodetype="Timetype"] label, .entry [data-nodetype="Datetype"] label{
 			width:70px;
 		}
-		.entry [data-nodetype="Timetype"] select{
+		.entry [data-nodetype="Timetype"] select,.entry [data-nodetype="Datetype"] select{
 			width:80px;
 		}
 		.entry [data-nodetype="Time"]{
@@ -222,11 +255,32 @@
 		.entry [data-nodetype="Zmanoffset"] select{
 			width:110px;
 		}
-		.datetype-monthday .weekday-selection{
+		.datetype-jmonthday .weekday-selection, .datetype-gmonthday .weekday-selection,
+		.datetype-weekday .jmonthday-selection, .datetype-weekday .gmonthday-selection,
+		.datetype-jmonthday .gmonthday-selection, .datetype-gmonthday .jmonthday-selection {
 			display: none!important;
 		}
-		.datetype-weekday .monthday-selection{
-			display: none!important;
+		
+		/* handling a special include for first date selection */
+		.specialinclude {
+			display: none;
+		}
+		#node-input-sc1DateAction .specialinclude {
+			display: inline-block;
+		}
+		#node-input-sc1DateAction .onlyinclude, #node-input-sc1DateAction .reginclude {
+			display:none;
+		}
+		.inline {
+			display: inline;
+            padding-right: 5px;                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+		}
+		.red-ui-editor .form-row span.inline label {
+			width:auto;
+		}
+		.red-ui-editor .form-row span.inline input {
+			width: auto;
+			vertical-align: top;
 		}
 	</style>
 	<div id="schedule-container" class="expend-container collapsed">

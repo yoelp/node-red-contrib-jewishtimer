@@ -16,8 +16,41 @@
 		for(let i=0;i<DAYS_COUNT;i++){
 			const id = i+1;
 			obj[`sc${id}DateActive`] = {value: false};
-			obj[`sc${id}DateAction`] = {value:0};
+			// obj[`sc${id}DateAction`] = {value:0};
 			obj[`sc${id}Datetype`] = {value:"weekday"};
+			obj[`sc${id}Sun`] = {value:1};
+			obj[`sc${id}Mon`] = {value:1};
+			obj[`sc${id}Tue`] = {value:1};
+			obj[`sc${id}Wed`] = {value:1};
+			obj[`sc${id}Thu`] = {value:1};
+			obj[`sc${id}Fri`] = {value:1};
+			obj[`sc${id}Sat`] = {value:1};
+			obj[`sc${id}Jan`] = {value:1};
+			obj[`sc${id}Feb`] = {value:1};
+			obj[`sc${id}Mar`] = {value:1};
+			obj[`sc${id}Apr`] = {value:1};
+			obj[`sc${id}May`] = {value:1};
+			obj[`sc${id}Jun`] = {value:1};
+			obj[`sc${id}Jul`] = {value:1};
+			obj[`sc${id}Aug`] = {value:1};
+			obj[`sc${id}Sep`] = {value:1};
+			obj[`sc${id}Oct`] = {value:1};
+			obj[`sc${id}Nov`] = {value:1};
+			obj[`sc${id}Dec`] = {value:1};
+			obj[`sc${id}Nisan`] = {value:1};
+			obj[`sc${id}Iyar`] = {value:1};
+			obj[`sc${id}Sivan`] = {value:1};
+			obj[`sc${id}Tamuz`] = {value:1};
+			obj[`sc${id}Av`] = {value:1};
+			obj[`sc${id}Elul`] = {value:1};
+			obj[`sc${id}Tishri`] = {value:1};
+			obj[`sc${id}Heshvan`] = {value:1};
+			obj[`sc${id}Kislev`] = {value:1};
+			obj[`sc${id}Tevet`] = {value:1};
+			obj[`sc${id}Shvat`] = {value:1};
+			obj[`sc${id}Adar1`] = {value:1};
+			obj[`sc${id}Adar2`] = {value:1};
+			
 		}
 		return obj;
 	})();
@@ -68,17 +101,17 @@
 			});
 			$(".js-timetype").change(e=>{
 				const val = e.target.value;
-				$(e.target).parents(".js-timerentry").removeClass("timertype-time timertype-zman").addClass(`timertype-${val}`);
+				$(e.target).parents(".js-entry").removeClass("timertype-time timertype-zman").addClass(`timertype-${val}`);
 			});
 			$(".js-datetype").change(e=>{
 				const val = e.target.value;
-				$(e.target).parents(".js-dateentry").removeClass("datetype-weekday datetype-monthday").addClass(`datetype-${val}`);
+				$(e.target).parents(".js-entry").removeClass("datetype-weekday datetype-jmonthday datetype-gmonthday").addClass(`datetype-${val}`);
 			});
-			$(".js-timer-active").change(e=>{
+			$(".js-active").change(e=>{
 				if(e.target.checked){
-					$(e.target).parents(".js-timerentry").addClass("active");
+					$(e.target).parents(".js-entry").addClass("active");
 				} else {
-					$(e.target).parents(".js-timerentry").removeClass("active");
+					$(e.target).parents(".js-entry").removeClass("active");
 				}
 			});
         }
@@ -158,36 +191,36 @@
 			background-color: #f2f2f2;
 			padding: 10px;
 		}
-		.entry [data-nodetype="Active"]{
+		.entry [data-nodetype$="Active"]{
 			width:18%;
 			display:inline-block;
 		}
-		.entry [data-nodetype="Active"] label{
+		.entry [data-nodetype$="Active"] label{
 			width:40px;
 		}
-		.entry [data-nodetype="Active"] input{
+		.entry [data-nodetype$="Active"] input{
 			width:20px;
 			vertical-align:top;
 		}
-		.entry [data-nodetype="Action"] {
+		.entry [data-nodetype$="Action"] {
 			width:32%;
 			display:inline-block;
 		}
-		.entry [data-nodetype="Action"] label{
+		.entry [data-nodetype$="Action"] label{
 			width:44px;
 		}
-		.entry [data-nodetype="Action"] select{
+		.entry [data-nodetype$="Action"] select{
 			width: 80px;
 		}
-		.entry [data-nodetype="Timetype"]{
+		.entry [data-nodetype="Timetype"], .entry [data-nodetype="Datetype"]{
 			width:40%;
 			padding-left:14px;
 			display:inline-block;
 		}
-		.entry [data-nodetype="Timetype"] label{
+		.entry [data-nodetype="Timetype"] label, .entry [data-nodetype="Datetype"] label{
 			width:70px;
 		}
-		.entry [data-nodetype="Timetype"] select{
+		.entry [data-nodetype="Timetype"] select,.entry [data-nodetype="Datetype"] select{
 			width:80px;
 		}
 		.entry [data-nodetype="Time"]{
@@ -222,11 +255,32 @@
 		.entry [data-nodetype="Zmanoffset"] select{
 			width:110px;
 		}
-		.datetype-monthday .weekday-selection{
+		.datetype-jmonthday .weekday-selection, .datetype-gmonthday .weekday-selection,
+		.datetype-weekday .jmonthday-selection, .datetype-weekday .gmonthday-selection,
+		.datetype-jmonthday .gmonthday-selection, .datetype-gmonthday .jmonthday-selection {
 			display: none!important;
 		}
-		.datetype-weekday .monthday-selection{
-			display: none!important;
+		
+		/* handling a special include for first date selection */
+		.specialinclude {
+			display: none;
+		}
+		#node-input-sc1DateAction .specialinclude {
+			display: inline-block;
+		}
+		#node-input-sc1DateAction .onlyinclude, #node-input-sc1DateAction .reginclude {
+			display:none;
+		}
+		.inline {
+			display: inline;
+            padding-right: 5px;                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+		}
+		.red-ui-editor .form-row span.inline label {
+			width:auto;
+		}
+		.red-ui-editor .form-row span.inline input {
+			width: auto;
+			vertical-align: top;
 		}
 	</style>
 	<div id="schedule-container" class="expend-container collapsed">
@@ -235,10 +289,10 @@
 			<i class="fa fa-chevron-up expanded-vis"></i>
 		</h4>
 		
-				<div class="js-timerentry entry expanded-vis" >
+				<div class="js-entry entry expanded-vis" >
 					<div class="form-row"  data-nodetype="TimeActive">
 						<label for="node-input-sc1TimeActive" >Active</label>
-						<input type="checkbox" id="node-input-sc1TimeActive" class="js-timer-active" />
+						<input type="checkbox" id="node-input-sc1TimeActive" class="js-active" />
 					</div>
 					<div class="form-row"  data-nodetype="TimeAction">
 						<label for="node-input-sc1TimeAction" >Action:</label>
@@ -295,10 +349,10 @@
 				</div>
 			
 
-				<div class="js-timerentry entry expanded-vis" >
+				<div class="js-entry entry expanded-vis" >
 					<div class="form-row"  data-nodetype="TimeActive">
 						<label for="node-input-sc2TimeActive" >Active</label>
-						<input type="checkbox" id="node-input-sc2TimeActive" class="js-timer-active" />
+						<input type="checkbox" id="node-input-sc2TimeActive" class="js-active" />
 					</div>
 					<div class="form-row"  data-nodetype="TimeAction">
 						<label for="node-input-sc2TimeAction" >Action:</label>
@@ -355,10 +409,10 @@
 				</div>
 			
 
-				<div class="js-timerentry entry expanded-vis" >
+				<div class="js-entry entry expanded-vis" >
 					<div class="form-row"  data-nodetype="TimeActive">
 						<label for="node-input-sc3TimeActive" >Active</label>
-						<input type="checkbox" id="node-input-sc3TimeActive" class="js-timer-active" />
+						<input type="checkbox" id="node-input-sc3TimeActive" class="js-active" />
 					</div>
 					<div class="form-row"  data-nodetype="TimeAction">
 						<label for="node-input-sc3TimeAction" >Action:</label>
@@ -415,10 +469,10 @@
 				</div>
 			
 
-				<div class="js-timerentry entry expanded-vis" >
+				<div class="js-entry entry expanded-vis" >
 					<div class="form-row"  data-nodetype="TimeActive">
 						<label for="node-input-sc4TimeActive" >Active</label>
-						<input type="checkbox" id="node-input-sc4TimeActive" class="js-timer-active" />
+						<input type="checkbox" id="node-input-sc4TimeActive" class="js-active" />
 					</div>
 					<div class="form-row"  data-nodetype="TimeAction">
 						<label for="node-input-sc4TimeAction" >Action:</label>
@@ -475,10 +529,10 @@
 				</div>
 			
 
-				<div class="js-timerentry entry expanded-vis" >
+				<div class="js-entry entry expanded-vis" >
 					<div class="form-row"  data-nodetype="TimeActive">
 						<label for="node-input-sc5TimeActive" >Active</label>
-						<input type="checkbox" id="node-input-sc5TimeActive" class="js-timer-active" />
+						<input type="checkbox" id="node-input-sc5TimeActive" class="js-active" />
 					</div>
 					<div class="form-row"  data-nodetype="TimeAction">
 						<label for="node-input-sc5TimeAction" >Action:</label>
@@ -535,10 +589,10 @@
 				</div>
 			
 
-				<div class="js-timerentry entry expanded-vis" >
+				<div class="js-entry entry expanded-vis" >
 					<div class="form-row"  data-nodetype="TimeActive">
 						<label for="node-input-sc6TimeActive" >Active</label>
-						<input type="checkbox" id="node-input-sc6TimeActive" class="js-timer-active" />
+						<input type="checkbox" id="node-input-sc6TimeActive" class="js-active" />
 					</div>
 					<div class="form-row"  data-nodetype="TimeAction">
 						<label for="node-input-sc6TimeAction" >Action:</label>
@@ -595,10 +649,10 @@
 				</div>
 			
 
-				<div class="js-timerentry entry expanded-vis" >
+				<div class="js-entry entry expanded-vis" >
 					<div class="form-row"  data-nodetype="TimeActive">
 						<label for="node-input-sc7TimeActive" >Active</label>
-						<input type="checkbox" id="node-input-sc7TimeActive" class="js-timer-active" />
+						<input type="checkbox" id="node-input-sc7TimeActive" class="js-active" />
 					</div>
 					<div class="form-row"  data-nodetype="TimeAction">
 						<label for="node-input-sc7TimeAction" >Action:</label>
@@ -655,10 +709,10 @@
 				</div>
 			
 
-				<div class="js-timerentry entry expanded-vis" >
+				<div class="js-entry entry expanded-vis" >
 					<div class="form-row"  data-nodetype="TimeActive">
 						<label for="node-input-sc8TimeActive" >Active</label>
-						<input type="checkbox" id="node-input-sc8TimeActive" class="js-timer-active" />
+						<input type="checkbox" id="node-input-sc8TimeActive" class="js-active" />
 					</div>
 					<div class="form-row"  data-nodetype="TimeAction">
 						<label for="node-input-sc8TimeAction" >Action:</label>
@@ -715,10 +769,10 @@
 				</div>
 			
 
-				<div class="js-timerentry entry expanded-vis" >
+				<div class="js-entry entry expanded-vis" >
 					<div class="form-row"  data-nodetype="TimeActive">
 						<label for="node-input-sc9TimeActive" >Active</label>
-						<input type="checkbox" id="node-input-sc9TimeActive" class="js-timer-active" />
+						<input type="checkbox" id="node-input-sc9TimeActive" class="js-active" />
 					</div>
 					<div class="form-row"  data-nodetype="TimeAction">
 						<label for="node-input-sc9TimeAction" >Action:</label>
@@ -775,10 +829,10 @@
 				</div>
 			
 
-				<div class="js-timerentry entry expanded-vis" >
+				<div class="js-entry entry expanded-vis" >
 					<div class="form-row"  data-nodetype="TimeActive">
 						<label for="node-input-sc10TimeActive" >Active</label>
-						<input type="checkbox" id="node-input-sc10TimeActive" class="js-timer-active" />
+						<input type="checkbox" id="node-input-sc10TimeActive" class="js-active" />
 					</div>
 					<div class="form-row"  data-nodetype="TimeAction">
 						<label for="node-input-sc10TimeAction" >Action:</label>
@@ -843,282 +897,1652 @@
 			<i class="fa fa-chevron-up expanded-vis"></i>
 		</h4>
 		
-				<div class="js-dateentry entry expanded-vis" >
+				<div class="js-entry entry expanded-vis" >
 					<div class="form-row"  data-nodetype="DateActive">
 						<label for="node-input-sc1DateActive" >Active</label>
-						<input type="checkbox" id="node-input-sc1DateActive" class="js-timer-active" />
+						<input type="checkbox" id="node-input-sc1DateActive" class="js-active" />
 					</div>
 					<div class="form-row"  data-nodetype="DateAction">
 						<label for="node-input-sc1DateAction" >Action:</label>
 						<select id="node-input-sc1DateAction" >
-							<option value="1">Include</option>
+							<option value="1" class="reginclude">Include</option>
+							<option value="2" class="specialinclude">Include</option>
+							<option value="2" class="onlyinclude">Include Only</option>
 							<option value="0">Exclude</option>
 						</select>
 					</div>
 					<div class="form-row" data-nodetype="Datetype">
-						<label for="node-input-sc1Datetype" >Time Type</label>
+						<label for="node-input-sc1Datetype" >Date Type</label>
 						<select id="node-input-sc1Datetype"  class="js-datetype">
 							<option value="weekday">Weekdays</option>
-							<option value="monthday">Dates</option>
+							<option value="jmonthday">Jewish Dates</option>
+							<option value="gmonthday">Gregorian Dates</option>
 						</select>
 					</div>
 					<div class="form-row weekday-selection"  data-nodetype="Weekday">
-						Weekday
+						<span class="inline">
+							<label for="node-input-sc1Sun" >Sunday</label>
+							<input type="checkbox" id="node-input-sc1Sun" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Mon" >Monday</label>
+							<input type="checkbox" id="node-input-sc1Mon"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Tue" >Tuesday</label>
+							<input type="checkbox" id="node-input-sc1Tue"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Wed" >Wednesday</label>
+							<input type="checkbox" id="node-input-sc1Wed"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Thu" >Thursday</label>
+							<input type="checkbox" id="node-input-sc1Thu" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Fri" >Friday</label>
+							<input type="checkbox" id="node-input-sc1Fri" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Sat" >Saturday</label>
+							<input type="checkbox" id="node-input-sc1Sat"  />
+						</span>
 					</div>
-					<div class="form-row monthday-selection"  data-nodetype="Weekday">
-						Month
+					<div class="form-row gmonthday-selection"  data-nodetype="gMonthday">
+						<span class="inline">
+							<label for="node-input-sc1Jan" >Jan</label>
+							<input type="checkbox" id="node-input-sc1Jan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Feb" >Feb</label>
+							<input type="checkbox" id="node-input-sc1Feb"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Mar" >Mar</label>
+							<input type="checkbox" id="node-input-sc1Mar"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Apr" >Apr</label>
+							<input type="checkbox" id="node-input-sc1Apr"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1May" >May</label>
+							<input type="checkbox" id="node-input-sc1May"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Jun" >Jun</label>
+							<input type="checkbox" id="node-input-sc1Jun"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Jul" >Jul</label>
+							<input type="checkbox" id="node-input-sc1Jul"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Aug" >Aug</label>
+							<input type="checkbox" id="node-input-sc1Aug"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Sep" >Sep</label>
+							<input type="checkbox" id="node-input-sc1Sep"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Oct" >Oct</label>
+							<input type="checkbox" id="node-input-sc1Oct"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Nov" >Nov</label>
+							<input type="checkbox" id="node-input-sc1Nov"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Dec" >Dec</label>
+							<input type="checkbox" id="node-input-sc1Dec"  />
+						</span>
+						<br />
+						<label for="node-input-sc1gmonthdays" title="Leave empty for all">Select Days</label>
+						<input type="text" patteran="d{1,2}(,d{1,2})*" id="node-input-sc1gmonthdays" placeholder="1,4,5,8,29"/>
+					</div>
+					<div class="form-row jmonthday-selection"  data-nodetype="jMonthday">
+						<span class="inline">
+							<label for="node-input-sc1Nisan" >Nisan</label>
+							<input type="checkbox" id="node-input-sc1Nisan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Iyar" >Iyar</label>
+							<input type="checkbox" id="node-input-sc1Iyar"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Sivan" >Sivan</label>
+							<input type="checkbox" id="node-input-sc1Sivan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Tamuz" >Tamuz</label>
+							<input type="checkbox" id="node-input-sc1Tamuz"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Av" >Av</label>
+							<input type="checkbox" id="node-input-sc1Av"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Elul" >Elul</label>
+							<input type="checkbox" id="node-input-sc1Elul"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Tishri" >Tishri</label>
+							<input type="checkbox" id="node-input-sc1Tishri"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Heshvan" >Cheshvan</label>
+							<input type="checkbox" id="node-input-sc1Heshvan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Kislev" >Kislev</label>
+							<input type="checkbox" id="node-input-sc1Kislev"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Tevet" >Tevet</label>
+							<input type="checkbox" id="node-input-sc1Tevet"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Shevat" >Shevat</label>
+							<input type="checkbox" id="node-input-sc1Shevat"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Adar1" >Adar I</label>
+							<input type="checkbox" id="node-input-sc1Adar1"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc1Adar2" >Adar, Adar II</label>
+							<input type="checkbox" id="node-input-sc1Adar2"  />
+						</span>
+						<br />
+						<label for="node-input-sc1jmonthdays" title="Leave empty for all">Select Days</label>
+						<input type="text" patteran="d{1,2}(,d{1,2})*" id="node-input-sc1jmonthdays" placeholder="1,4,5,8,29"/>
 					</div>
 				</div>
 		
 
-				<div class="js-dateentry entry expanded-vis" >
+				<div class="js-entry entry expanded-vis" >
 					<div class="form-row"  data-nodetype="DateActive">
 						<label for="node-input-sc2DateActive" >Active</label>
-						<input type="checkbox" id="node-input-sc2DateActive" class="js-timer-active" />
+						<input type="checkbox" id="node-input-sc2DateActive" class="js-active" />
 					</div>
 					<div class="form-row"  data-nodetype="DateAction">
 						<label for="node-input-sc2DateAction" >Action:</label>
 						<select id="node-input-sc2DateAction" >
-							<option value="1">Include</option>
+							<option value="1" class="reginclude">Include</option>
+							<option value="2" class="specialinclude">Include</option>
+							<option value="2" class="onlyinclude">Include Only</option>
 							<option value="0">Exclude</option>
 						</select>
 					</div>
 					<div class="form-row" data-nodetype="Datetype">
-						<label for="node-input-sc2Datetype" >Time Type</label>
+						<label for="node-input-sc2Datetype" >Date Type</label>
 						<select id="node-input-sc2Datetype"  class="js-datetype">
 							<option value="weekday">Weekdays</option>
-							<option value="monthday">Dates</option>
+							<option value="jmonthday">Jewish Dates</option>
+							<option value="gmonthday">Gregorian Dates</option>
 						</select>
 					</div>
 					<div class="form-row weekday-selection"  data-nodetype="Weekday">
-						Weekday
+						<span class="inline">
+							<label for="node-input-sc2Sun" >Sunday</label>
+							<input type="checkbox" id="node-input-sc2Sun" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Mon" >Monday</label>
+							<input type="checkbox" id="node-input-sc2Mon"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Tue" >Tuesday</label>
+							<input type="checkbox" id="node-input-sc2Tue"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Wed" >Wednesday</label>
+							<input type="checkbox" id="node-input-sc2Wed"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Thu" >Thursday</label>
+							<input type="checkbox" id="node-input-sc2Thu" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Fri" >Friday</label>
+							<input type="checkbox" id="node-input-sc2Fri" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Sat" >Saturday</label>
+							<input type="checkbox" id="node-input-sc2Sat"  />
+						</span>
 					</div>
-					<div class="form-row monthday-selection"  data-nodetype="Weekday">
-						Month
+					<div class="form-row gmonthday-selection"  data-nodetype="gMonthday">
+						<span class="inline">
+							<label for="node-input-sc2Jan" >Jan</label>
+							<input type="checkbox" id="node-input-sc2Jan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Feb" >Feb</label>
+							<input type="checkbox" id="node-input-sc2Feb"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Mar" >Mar</label>
+							<input type="checkbox" id="node-input-sc2Mar"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Apr" >Apr</label>
+							<input type="checkbox" id="node-input-sc2Apr"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2May" >May</label>
+							<input type="checkbox" id="node-input-sc2May"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Jun" >Jun</label>
+							<input type="checkbox" id="node-input-sc2Jun"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Jul" >Jul</label>
+							<input type="checkbox" id="node-input-sc2Jul"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Aug" >Aug</label>
+							<input type="checkbox" id="node-input-sc2Aug"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Sep" >Sep</label>
+							<input type="checkbox" id="node-input-sc2Sep"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Oct" >Oct</label>
+							<input type="checkbox" id="node-input-sc2Oct"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Nov" >Nov</label>
+							<input type="checkbox" id="node-input-sc2Nov"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Dec" >Dec</label>
+							<input type="checkbox" id="node-input-sc2Dec"  />
+						</span>
+						<br />
+						<label for="node-input-sc2gmonthdays" title="Leave empty for all">Select Days</label>
+						<input type="text" patteran="d{1,2}(,d{1,2})*" id="node-input-sc2gmonthdays" placeholder="1,4,5,8,29"/>
+					</div>
+					<div class="form-row jmonthday-selection"  data-nodetype="jMonthday">
+						<span class="inline">
+							<label for="node-input-sc2Nisan" >Nisan</label>
+							<input type="checkbox" id="node-input-sc2Nisan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Iyar" >Iyar</label>
+							<input type="checkbox" id="node-input-sc2Iyar"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Sivan" >Sivan</label>
+							<input type="checkbox" id="node-input-sc2Sivan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Tamuz" >Tamuz</label>
+							<input type="checkbox" id="node-input-sc2Tamuz"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Av" >Av</label>
+							<input type="checkbox" id="node-input-sc2Av"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Elul" >Elul</label>
+							<input type="checkbox" id="node-input-sc2Elul"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Tishri" >Tishri</label>
+							<input type="checkbox" id="node-input-sc2Tishri"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Heshvan" >Cheshvan</label>
+							<input type="checkbox" id="node-input-sc2Heshvan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Kislev" >Kislev</label>
+							<input type="checkbox" id="node-input-sc2Kislev"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Tevet" >Tevet</label>
+							<input type="checkbox" id="node-input-sc2Tevet"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Shevat" >Shevat</label>
+							<input type="checkbox" id="node-input-sc2Shevat"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Adar1" >Adar I</label>
+							<input type="checkbox" id="node-input-sc2Adar1"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc2Adar2" >Adar, Adar II</label>
+							<input type="checkbox" id="node-input-sc2Adar2"  />
+						</span>
+						<br />
+						<label for="node-input-sc2jmonthdays" title="Leave empty for all">Select Days</label>
+						<input type="text" patteran="d{1,2}(,d{1,2})*" id="node-input-sc2jmonthdays" placeholder="1,4,5,8,29"/>
 					</div>
 				</div>
 		
 
-				<div class="js-dateentry entry expanded-vis" >
+				<div class="js-entry entry expanded-vis" >
 					<div class="form-row"  data-nodetype="DateActive">
 						<label for="node-input-sc3DateActive" >Active</label>
-						<input type="checkbox" id="node-input-sc3DateActive" class="js-timer-active" />
+						<input type="checkbox" id="node-input-sc3DateActive" class="js-active" />
 					</div>
 					<div class="form-row"  data-nodetype="DateAction">
 						<label for="node-input-sc3DateAction" >Action:</label>
 						<select id="node-input-sc3DateAction" >
-							<option value="1">Include</option>
+							<option value="1" class="reginclude">Include</option>
+							<option value="2" class="specialinclude">Include</option>
+							<option value="2" class="onlyinclude">Include Only</option>
 							<option value="0">Exclude</option>
 						</select>
 					</div>
 					<div class="form-row" data-nodetype="Datetype">
-						<label for="node-input-sc3Datetype" >Time Type</label>
+						<label for="node-input-sc3Datetype" >Date Type</label>
 						<select id="node-input-sc3Datetype"  class="js-datetype">
 							<option value="weekday">Weekdays</option>
-							<option value="monthday">Dates</option>
+							<option value="jmonthday">Jewish Dates</option>
+							<option value="gmonthday">Gregorian Dates</option>
 						</select>
 					</div>
 					<div class="form-row weekday-selection"  data-nodetype="Weekday">
-						Weekday
+						<span class="inline">
+							<label for="node-input-sc3Sun" >Sunday</label>
+							<input type="checkbox" id="node-input-sc3Sun" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Mon" >Monday</label>
+							<input type="checkbox" id="node-input-sc3Mon"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Tue" >Tuesday</label>
+							<input type="checkbox" id="node-input-sc3Tue"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Wed" >Wednesday</label>
+							<input type="checkbox" id="node-input-sc3Wed"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Thu" >Thursday</label>
+							<input type="checkbox" id="node-input-sc3Thu" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Fri" >Friday</label>
+							<input type="checkbox" id="node-input-sc3Fri" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Sat" >Saturday</label>
+							<input type="checkbox" id="node-input-sc3Sat"  />
+						</span>
 					</div>
-					<div class="form-row monthday-selection"  data-nodetype="Weekday">
-						Month
+					<div class="form-row gmonthday-selection"  data-nodetype="gMonthday">
+						<span class="inline">
+							<label for="node-input-sc3Jan" >Jan</label>
+							<input type="checkbox" id="node-input-sc3Jan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Feb" >Feb</label>
+							<input type="checkbox" id="node-input-sc3Feb"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Mar" >Mar</label>
+							<input type="checkbox" id="node-input-sc3Mar"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Apr" >Apr</label>
+							<input type="checkbox" id="node-input-sc3Apr"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3May" >May</label>
+							<input type="checkbox" id="node-input-sc3May"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Jun" >Jun</label>
+							<input type="checkbox" id="node-input-sc3Jun"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Jul" >Jul</label>
+							<input type="checkbox" id="node-input-sc3Jul"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Aug" >Aug</label>
+							<input type="checkbox" id="node-input-sc3Aug"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Sep" >Sep</label>
+							<input type="checkbox" id="node-input-sc3Sep"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Oct" >Oct</label>
+							<input type="checkbox" id="node-input-sc3Oct"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Nov" >Nov</label>
+							<input type="checkbox" id="node-input-sc3Nov"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Dec" >Dec</label>
+							<input type="checkbox" id="node-input-sc3Dec"  />
+						</span>
+						<br />
+						<label for="node-input-sc3gmonthdays" title="Leave empty for all">Select Days</label>
+						<input type="text" patteran="d{1,2}(,d{1,2})*" id="node-input-sc3gmonthdays" placeholder="1,4,5,8,29"/>
+					</div>
+					<div class="form-row jmonthday-selection"  data-nodetype="jMonthday">
+						<span class="inline">
+							<label for="node-input-sc3Nisan" >Nisan</label>
+							<input type="checkbox" id="node-input-sc3Nisan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Iyar" >Iyar</label>
+							<input type="checkbox" id="node-input-sc3Iyar"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Sivan" >Sivan</label>
+							<input type="checkbox" id="node-input-sc3Sivan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Tamuz" >Tamuz</label>
+							<input type="checkbox" id="node-input-sc3Tamuz"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Av" >Av</label>
+							<input type="checkbox" id="node-input-sc3Av"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Elul" >Elul</label>
+							<input type="checkbox" id="node-input-sc3Elul"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Tishri" >Tishri</label>
+							<input type="checkbox" id="node-input-sc3Tishri"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Heshvan" >Cheshvan</label>
+							<input type="checkbox" id="node-input-sc3Heshvan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Kislev" >Kislev</label>
+							<input type="checkbox" id="node-input-sc3Kislev"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Tevet" >Tevet</label>
+							<input type="checkbox" id="node-input-sc3Tevet"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Shevat" >Shevat</label>
+							<input type="checkbox" id="node-input-sc3Shevat"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Adar1" >Adar I</label>
+							<input type="checkbox" id="node-input-sc3Adar1"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc3Adar2" >Adar, Adar II</label>
+							<input type="checkbox" id="node-input-sc3Adar2"  />
+						</span>
+						<br />
+						<label for="node-input-sc3jmonthdays" title="Leave empty for all">Select Days</label>
+						<input type="text" patteran="d{1,2}(,d{1,2})*" id="node-input-sc3jmonthdays" placeholder="1,4,5,8,29"/>
 					</div>
 				</div>
 		
 
-				<div class="js-dateentry entry expanded-vis" >
+				<div class="js-entry entry expanded-vis" >
 					<div class="form-row"  data-nodetype="DateActive">
 						<label for="node-input-sc4DateActive" >Active</label>
-						<input type="checkbox" id="node-input-sc4DateActive" class="js-timer-active" />
+						<input type="checkbox" id="node-input-sc4DateActive" class="js-active" />
 					</div>
 					<div class="form-row"  data-nodetype="DateAction">
 						<label for="node-input-sc4DateAction" >Action:</label>
 						<select id="node-input-sc4DateAction" >
-							<option value="1">Include</option>
+							<option value="1" class="reginclude">Include</option>
+							<option value="2" class="specialinclude">Include</option>
+							<option value="2" class="onlyinclude">Include Only</option>
 							<option value="0">Exclude</option>
 						</select>
 					</div>
 					<div class="form-row" data-nodetype="Datetype">
-						<label for="node-input-sc4Datetype" >Time Type</label>
+						<label for="node-input-sc4Datetype" >Date Type</label>
 						<select id="node-input-sc4Datetype"  class="js-datetype">
 							<option value="weekday">Weekdays</option>
-							<option value="monthday">Dates</option>
+							<option value="jmonthday">Jewish Dates</option>
+							<option value="gmonthday">Gregorian Dates</option>
 						</select>
 					</div>
 					<div class="form-row weekday-selection"  data-nodetype="Weekday">
-						Weekday
+						<span class="inline">
+							<label for="node-input-sc4Sun" >Sunday</label>
+							<input type="checkbox" id="node-input-sc4Sun" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Mon" >Monday</label>
+							<input type="checkbox" id="node-input-sc4Mon"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Tue" >Tuesday</label>
+							<input type="checkbox" id="node-input-sc4Tue"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Wed" >Wednesday</label>
+							<input type="checkbox" id="node-input-sc4Wed"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Thu" >Thursday</label>
+							<input type="checkbox" id="node-input-sc4Thu" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Fri" >Friday</label>
+							<input type="checkbox" id="node-input-sc4Fri" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Sat" >Saturday</label>
+							<input type="checkbox" id="node-input-sc4Sat"  />
+						</span>
 					</div>
-					<div class="form-row monthday-selection"  data-nodetype="Weekday">
-						Month
+					<div class="form-row gmonthday-selection"  data-nodetype="gMonthday">
+						<span class="inline">
+							<label for="node-input-sc4Jan" >Jan</label>
+							<input type="checkbox" id="node-input-sc4Jan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Feb" >Feb</label>
+							<input type="checkbox" id="node-input-sc4Feb"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Mar" >Mar</label>
+							<input type="checkbox" id="node-input-sc4Mar"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Apr" >Apr</label>
+							<input type="checkbox" id="node-input-sc4Apr"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4May" >May</label>
+							<input type="checkbox" id="node-input-sc4May"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Jun" >Jun</label>
+							<input type="checkbox" id="node-input-sc4Jun"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Jul" >Jul</label>
+							<input type="checkbox" id="node-input-sc4Jul"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Aug" >Aug</label>
+							<input type="checkbox" id="node-input-sc4Aug"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Sep" >Sep</label>
+							<input type="checkbox" id="node-input-sc4Sep"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Oct" >Oct</label>
+							<input type="checkbox" id="node-input-sc4Oct"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Nov" >Nov</label>
+							<input type="checkbox" id="node-input-sc4Nov"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Dec" >Dec</label>
+							<input type="checkbox" id="node-input-sc4Dec"  />
+						</span>
+						<br />
+						<label for="node-input-sc4gmonthdays" title="Leave empty for all">Select Days</label>
+						<input type="text" patteran="d{1,2}(,d{1,2})*" id="node-input-sc4gmonthdays" placeholder="1,4,5,8,29"/>
+					</div>
+					<div class="form-row jmonthday-selection"  data-nodetype="jMonthday">
+						<span class="inline">
+							<label for="node-input-sc4Nisan" >Nisan</label>
+							<input type="checkbox" id="node-input-sc4Nisan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Iyar" >Iyar</label>
+							<input type="checkbox" id="node-input-sc4Iyar"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Sivan" >Sivan</label>
+							<input type="checkbox" id="node-input-sc4Sivan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Tamuz" >Tamuz</label>
+							<input type="checkbox" id="node-input-sc4Tamuz"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Av" >Av</label>
+							<input type="checkbox" id="node-input-sc4Av"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Elul" >Elul</label>
+							<input type="checkbox" id="node-input-sc4Elul"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Tishri" >Tishri</label>
+							<input type="checkbox" id="node-input-sc4Tishri"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Heshvan" >Cheshvan</label>
+							<input type="checkbox" id="node-input-sc4Heshvan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Kislev" >Kislev</label>
+							<input type="checkbox" id="node-input-sc4Kislev"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Tevet" >Tevet</label>
+							<input type="checkbox" id="node-input-sc4Tevet"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Shevat" >Shevat</label>
+							<input type="checkbox" id="node-input-sc4Shevat"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Adar1" >Adar I</label>
+							<input type="checkbox" id="node-input-sc4Adar1"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc4Adar2" >Adar, Adar II</label>
+							<input type="checkbox" id="node-input-sc4Adar2"  />
+						</span>
+						<br />
+						<label for="node-input-sc4jmonthdays" title="Leave empty for all">Select Days</label>
+						<input type="text" patteran="d{1,2}(,d{1,2})*" id="node-input-sc4jmonthdays" placeholder="1,4,5,8,29"/>
 					</div>
 				</div>
 		
 
-				<div class="js-dateentry entry expanded-vis" >
+				<div class="js-entry entry expanded-vis" >
 					<div class="form-row"  data-nodetype="DateActive">
 						<label for="node-input-sc5DateActive" >Active</label>
-						<input type="checkbox" id="node-input-sc5DateActive" class="js-timer-active" />
+						<input type="checkbox" id="node-input-sc5DateActive" class="js-active" />
 					</div>
 					<div class="form-row"  data-nodetype="DateAction">
 						<label for="node-input-sc5DateAction" >Action:</label>
 						<select id="node-input-sc5DateAction" >
-							<option value="1">Include</option>
+							<option value="1" class="reginclude">Include</option>
+							<option value="2" class="specialinclude">Include</option>
+							<option value="2" class="onlyinclude">Include Only</option>
 							<option value="0">Exclude</option>
 						</select>
 					</div>
 					<div class="form-row" data-nodetype="Datetype">
-						<label for="node-input-sc5Datetype" >Time Type</label>
+						<label for="node-input-sc5Datetype" >Date Type</label>
 						<select id="node-input-sc5Datetype"  class="js-datetype">
 							<option value="weekday">Weekdays</option>
-							<option value="monthday">Dates</option>
+							<option value="jmonthday">Jewish Dates</option>
+							<option value="gmonthday">Gregorian Dates</option>
 						</select>
 					</div>
 					<div class="form-row weekday-selection"  data-nodetype="Weekday">
-						Weekday
+						<span class="inline">
+							<label for="node-input-sc5Sun" >Sunday</label>
+							<input type="checkbox" id="node-input-sc5Sun" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Mon" >Monday</label>
+							<input type="checkbox" id="node-input-sc5Mon"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Tue" >Tuesday</label>
+							<input type="checkbox" id="node-input-sc5Tue"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Wed" >Wednesday</label>
+							<input type="checkbox" id="node-input-sc5Wed"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Thu" >Thursday</label>
+							<input type="checkbox" id="node-input-sc5Thu" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Fri" >Friday</label>
+							<input type="checkbox" id="node-input-sc5Fri" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Sat" >Saturday</label>
+							<input type="checkbox" id="node-input-sc5Sat"  />
+						</span>
 					</div>
-					<div class="form-row monthday-selection"  data-nodetype="Weekday">
-						Month
+					<div class="form-row gmonthday-selection"  data-nodetype="gMonthday">
+						<span class="inline">
+							<label for="node-input-sc5Jan" >Jan</label>
+							<input type="checkbox" id="node-input-sc5Jan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Feb" >Feb</label>
+							<input type="checkbox" id="node-input-sc5Feb"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Mar" >Mar</label>
+							<input type="checkbox" id="node-input-sc5Mar"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Apr" >Apr</label>
+							<input type="checkbox" id="node-input-sc5Apr"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5May" >May</label>
+							<input type="checkbox" id="node-input-sc5May"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Jun" >Jun</label>
+							<input type="checkbox" id="node-input-sc5Jun"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Jul" >Jul</label>
+							<input type="checkbox" id="node-input-sc5Jul"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Aug" >Aug</label>
+							<input type="checkbox" id="node-input-sc5Aug"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Sep" >Sep</label>
+							<input type="checkbox" id="node-input-sc5Sep"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Oct" >Oct</label>
+							<input type="checkbox" id="node-input-sc5Oct"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Nov" >Nov</label>
+							<input type="checkbox" id="node-input-sc5Nov"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Dec" >Dec</label>
+							<input type="checkbox" id="node-input-sc5Dec"  />
+						</span>
+						<br />
+						<label for="node-input-sc5gmonthdays" title="Leave empty for all">Select Days</label>
+						<input type="text" patteran="d{1,2}(,d{1,2})*" id="node-input-sc5gmonthdays" placeholder="1,4,5,8,29"/>
+					</div>
+					<div class="form-row jmonthday-selection"  data-nodetype="jMonthday">
+						<span class="inline">
+							<label for="node-input-sc5Nisan" >Nisan</label>
+							<input type="checkbox" id="node-input-sc5Nisan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Iyar" >Iyar</label>
+							<input type="checkbox" id="node-input-sc5Iyar"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Sivan" >Sivan</label>
+							<input type="checkbox" id="node-input-sc5Sivan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Tamuz" >Tamuz</label>
+							<input type="checkbox" id="node-input-sc5Tamuz"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Av" >Av</label>
+							<input type="checkbox" id="node-input-sc5Av"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Elul" >Elul</label>
+							<input type="checkbox" id="node-input-sc5Elul"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Tishri" >Tishri</label>
+							<input type="checkbox" id="node-input-sc5Tishri"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Heshvan" >Cheshvan</label>
+							<input type="checkbox" id="node-input-sc5Heshvan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Kislev" >Kislev</label>
+							<input type="checkbox" id="node-input-sc5Kislev"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Tevet" >Tevet</label>
+							<input type="checkbox" id="node-input-sc5Tevet"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Shevat" >Shevat</label>
+							<input type="checkbox" id="node-input-sc5Shevat"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Adar1" >Adar I</label>
+							<input type="checkbox" id="node-input-sc5Adar1"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc5Adar2" >Adar, Adar II</label>
+							<input type="checkbox" id="node-input-sc5Adar2"  />
+						</span>
+						<br />
+						<label for="node-input-sc5jmonthdays" title="Leave empty for all">Select Days</label>
+						<input type="text" patteran="d{1,2}(,d{1,2})*" id="node-input-sc5jmonthdays" placeholder="1,4,5,8,29"/>
 					</div>
 				</div>
 		
 
-				<div class="js-dateentry entry expanded-vis" >
+				<div class="js-entry entry expanded-vis" >
 					<div class="form-row"  data-nodetype="DateActive">
 						<label for="node-input-sc6DateActive" >Active</label>
-						<input type="checkbox" id="node-input-sc6DateActive" class="js-timer-active" />
+						<input type="checkbox" id="node-input-sc6DateActive" class="js-active" />
 					</div>
 					<div class="form-row"  data-nodetype="DateAction">
 						<label for="node-input-sc6DateAction" >Action:</label>
 						<select id="node-input-sc6DateAction" >
-							<option value="1">Include</option>
+							<option value="1" class="reginclude">Include</option>
+							<option value="2" class="specialinclude">Include</option>
+							<option value="2" class="onlyinclude">Include Only</option>
 							<option value="0">Exclude</option>
 						</select>
 					</div>
 					<div class="form-row" data-nodetype="Datetype">
-						<label for="node-input-sc6Datetype" >Time Type</label>
+						<label for="node-input-sc6Datetype" >Date Type</label>
 						<select id="node-input-sc6Datetype"  class="js-datetype">
 							<option value="weekday">Weekdays</option>
-							<option value="monthday">Dates</option>
+							<option value="jmonthday">Jewish Dates</option>
+							<option value="gmonthday">Gregorian Dates</option>
 						</select>
 					</div>
 					<div class="form-row weekday-selection"  data-nodetype="Weekday">
-						Weekday
+						<span class="inline">
+							<label for="node-input-sc6Sun" >Sunday</label>
+							<input type="checkbox" id="node-input-sc6Sun" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Mon" >Monday</label>
+							<input type="checkbox" id="node-input-sc6Mon"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Tue" >Tuesday</label>
+							<input type="checkbox" id="node-input-sc6Tue"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Wed" >Wednesday</label>
+							<input type="checkbox" id="node-input-sc6Wed"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Thu" >Thursday</label>
+							<input type="checkbox" id="node-input-sc6Thu" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Fri" >Friday</label>
+							<input type="checkbox" id="node-input-sc6Fri" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Sat" >Saturday</label>
+							<input type="checkbox" id="node-input-sc6Sat"  />
+						</span>
 					</div>
-					<div class="form-row monthday-selection"  data-nodetype="Weekday">
-						Month
+					<div class="form-row gmonthday-selection"  data-nodetype="gMonthday">
+						<span class="inline">
+							<label for="node-input-sc6Jan" >Jan</label>
+							<input type="checkbox" id="node-input-sc6Jan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Feb" >Feb</label>
+							<input type="checkbox" id="node-input-sc6Feb"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Mar" >Mar</label>
+							<input type="checkbox" id="node-input-sc6Mar"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Apr" >Apr</label>
+							<input type="checkbox" id="node-input-sc6Apr"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6May" >May</label>
+							<input type="checkbox" id="node-input-sc6May"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Jun" >Jun</label>
+							<input type="checkbox" id="node-input-sc6Jun"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Jul" >Jul</label>
+							<input type="checkbox" id="node-input-sc6Jul"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Aug" >Aug</label>
+							<input type="checkbox" id="node-input-sc6Aug"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Sep" >Sep</label>
+							<input type="checkbox" id="node-input-sc6Sep"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Oct" >Oct</label>
+							<input type="checkbox" id="node-input-sc6Oct"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Nov" >Nov</label>
+							<input type="checkbox" id="node-input-sc6Nov"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Dec" >Dec</label>
+							<input type="checkbox" id="node-input-sc6Dec"  />
+						</span>
+						<br />
+						<label for="node-input-sc6gmonthdays" title="Leave empty for all">Select Days</label>
+						<input type="text" patteran="d{1,2}(,d{1,2})*" id="node-input-sc6gmonthdays" placeholder="1,4,5,8,29"/>
+					</div>
+					<div class="form-row jmonthday-selection"  data-nodetype="jMonthday">
+						<span class="inline">
+							<label for="node-input-sc6Nisan" >Nisan</label>
+							<input type="checkbox" id="node-input-sc6Nisan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Iyar" >Iyar</label>
+							<input type="checkbox" id="node-input-sc6Iyar"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Sivan" >Sivan</label>
+							<input type="checkbox" id="node-input-sc6Sivan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Tamuz" >Tamuz</label>
+							<input type="checkbox" id="node-input-sc6Tamuz"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Av" >Av</label>
+							<input type="checkbox" id="node-input-sc6Av"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Elul" >Elul</label>
+							<input type="checkbox" id="node-input-sc6Elul"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Tishri" >Tishri</label>
+							<input type="checkbox" id="node-input-sc6Tishri"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Heshvan" >Cheshvan</label>
+							<input type="checkbox" id="node-input-sc6Heshvan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Kislev" >Kislev</label>
+							<input type="checkbox" id="node-input-sc6Kislev"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Tevet" >Tevet</label>
+							<input type="checkbox" id="node-input-sc6Tevet"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Shevat" >Shevat</label>
+							<input type="checkbox" id="node-input-sc6Shevat"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Adar1" >Adar I</label>
+							<input type="checkbox" id="node-input-sc6Adar1"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc6Adar2" >Adar, Adar II</label>
+							<input type="checkbox" id="node-input-sc6Adar2"  />
+						</span>
+						<br />
+						<label for="node-input-sc6jmonthdays" title="Leave empty for all">Select Days</label>
+						<input type="text" patteran="d{1,2}(,d{1,2})*" id="node-input-sc6jmonthdays" placeholder="1,4,5,8,29"/>
 					</div>
 				</div>
 		
 
-				<div class="js-dateentry entry expanded-vis" >
+				<div class="js-entry entry expanded-vis" >
 					<div class="form-row"  data-nodetype="DateActive">
 						<label for="node-input-sc7DateActive" >Active</label>
-						<input type="checkbox" id="node-input-sc7DateActive" class="js-timer-active" />
+						<input type="checkbox" id="node-input-sc7DateActive" class="js-active" />
 					</div>
 					<div class="form-row"  data-nodetype="DateAction">
 						<label for="node-input-sc7DateAction" >Action:</label>
 						<select id="node-input-sc7DateAction" >
-							<option value="1">Include</option>
+							<option value="1" class="reginclude">Include</option>
+							<option value="2" class="specialinclude">Include</option>
+							<option value="2" class="onlyinclude">Include Only</option>
 							<option value="0">Exclude</option>
 						</select>
 					</div>
 					<div class="form-row" data-nodetype="Datetype">
-						<label for="node-input-sc7Datetype" >Time Type</label>
+						<label for="node-input-sc7Datetype" >Date Type</label>
 						<select id="node-input-sc7Datetype"  class="js-datetype">
 							<option value="weekday">Weekdays</option>
-							<option value="monthday">Dates</option>
+							<option value="jmonthday">Jewish Dates</option>
+							<option value="gmonthday">Gregorian Dates</option>
 						</select>
 					</div>
 					<div class="form-row weekday-selection"  data-nodetype="Weekday">
-						Weekday
+						<span class="inline">
+							<label for="node-input-sc7Sun" >Sunday</label>
+							<input type="checkbox" id="node-input-sc7Sun" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Mon" >Monday</label>
+							<input type="checkbox" id="node-input-sc7Mon"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Tue" >Tuesday</label>
+							<input type="checkbox" id="node-input-sc7Tue"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Wed" >Wednesday</label>
+							<input type="checkbox" id="node-input-sc7Wed"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Thu" >Thursday</label>
+							<input type="checkbox" id="node-input-sc7Thu" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Fri" >Friday</label>
+							<input type="checkbox" id="node-input-sc7Fri" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Sat" >Saturday</label>
+							<input type="checkbox" id="node-input-sc7Sat"  />
+						</span>
 					</div>
-					<div class="form-row monthday-selection"  data-nodetype="Weekday">
-						Month
+					<div class="form-row gmonthday-selection"  data-nodetype="gMonthday">
+						<span class="inline">
+							<label for="node-input-sc7Jan" >Jan</label>
+							<input type="checkbox" id="node-input-sc7Jan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Feb" >Feb</label>
+							<input type="checkbox" id="node-input-sc7Feb"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Mar" >Mar</label>
+							<input type="checkbox" id="node-input-sc7Mar"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Apr" >Apr</label>
+							<input type="checkbox" id="node-input-sc7Apr"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7May" >May</label>
+							<input type="checkbox" id="node-input-sc7May"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Jun" >Jun</label>
+							<input type="checkbox" id="node-input-sc7Jun"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Jul" >Jul</label>
+							<input type="checkbox" id="node-input-sc7Jul"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Aug" >Aug</label>
+							<input type="checkbox" id="node-input-sc7Aug"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Sep" >Sep</label>
+							<input type="checkbox" id="node-input-sc7Sep"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Oct" >Oct</label>
+							<input type="checkbox" id="node-input-sc7Oct"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Nov" >Nov</label>
+							<input type="checkbox" id="node-input-sc7Nov"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Dec" >Dec</label>
+							<input type="checkbox" id="node-input-sc7Dec"  />
+						</span>
+						<br />
+						<label for="node-input-sc7gmonthdays" title="Leave empty for all">Select Days</label>
+						<input type="text" patteran="d{1,2}(,d{1,2})*" id="node-input-sc7gmonthdays" placeholder="1,4,5,8,29"/>
+					</div>
+					<div class="form-row jmonthday-selection"  data-nodetype="jMonthday">
+						<span class="inline">
+							<label for="node-input-sc7Nisan" >Nisan</label>
+							<input type="checkbox" id="node-input-sc7Nisan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Iyar" >Iyar</label>
+							<input type="checkbox" id="node-input-sc7Iyar"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Sivan" >Sivan</label>
+							<input type="checkbox" id="node-input-sc7Sivan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Tamuz" >Tamuz</label>
+							<input type="checkbox" id="node-input-sc7Tamuz"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Av" >Av</label>
+							<input type="checkbox" id="node-input-sc7Av"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Elul" >Elul</label>
+							<input type="checkbox" id="node-input-sc7Elul"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Tishri" >Tishri</label>
+							<input type="checkbox" id="node-input-sc7Tishri"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Heshvan" >Cheshvan</label>
+							<input type="checkbox" id="node-input-sc7Heshvan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Kislev" >Kislev</label>
+							<input type="checkbox" id="node-input-sc7Kislev"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Tevet" >Tevet</label>
+							<input type="checkbox" id="node-input-sc7Tevet"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Shevat" >Shevat</label>
+							<input type="checkbox" id="node-input-sc7Shevat"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Adar1" >Adar I</label>
+							<input type="checkbox" id="node-input-sc7Adar1"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc7Adar2" >Adar, Adar II</label>
+							<input type="checkbox" id="node-input-sc7Adar2"  />
+						</span>
+						<br />
+						<label for="node-input-sc7jmonthdays" title="Leave empty for all">Select Days</label>
+						<input type="text" patteran="d{1,2}(,d{1,2})*" id="node-input-sc7jmonthdays" placeholder="1,4,5,8,29"/>
 					</div>
 				</div>
 		
 
-				<div class="js-dateentry entry expanded-vis" >
+				<div class="js-entry entry expanded-vis" >
 					<div class="form-row"  data-nodetype="DateActive">
 						<label for="node-input-sc8DateActive" >Active</label>
-						<input type="checkbox" id="node-input-sc8DateActive" class="js-timer-active" />
+						<input type="checkbox" id="node-input-sc8DateActive" class="js-active" />
 					</div>
 					<div class="form-row"  data-nodetype="DateAction">
 						<label for="node-input-sc8DateAction" >Action:</label>
 						<select id="node-input-sc8DateAction" >
-							<option value="1">Include</option>
+							<option value="1" class="reginclude">Include</option>
+							<option value="2" class="specialinclude">Include</option>
+							<option value="2" class="onlyinclude">Include Only</option>
 							<option value="0">Exclude</option>
 						</select>
 					</div>
 					<div class="form-row" data-nodetype="Datetype">
-						<label for="node-input-sc8Datetype" >Time Type</label>
+						<label for="node-input-sc8Datetype" >Date Type</label>
 						<select id="node-input-sc8Datetype"  class="js-datetype">
 							<option value="weekday">Weekdays</option>
-							<option value="monthday">Dates</option>
+							<option value="jmonthday">Jewish Dates</option>
+							<option value="gmonthday">Gregorian Dates</option>
 						</select>
 					</div>
 					<div class="form-row weekday-selection"  data-nodetype="Weekday">
-						Weekday
+						<span class="inline">
+							<label for="node-input-sc8Sun" >Sunday</label>
+							<input type="checkbox" id="node-input-sc8Sun" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Mon" >Monday</label>
+							<input type="checkbox" id="node-input-sc8Mon"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Tue" >Tuesday</label>
+							<input type="checkbox" id="node-input-sc8Tue"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Wed" >Wednesday</label>
+							<input type="checkbox" id="node-input-sc8Wed"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Thu" >Thursday</label>
+							<input type="checkbox" id="node-input-sc8Thu" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Fri" >Friday</label>
+							<input type="checkbox" id="node-input-sc8Fri" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Sat" >Saturday</label>
+							<input type="checkbox" id="node-input-sc8Sat"  />
+						</span>
 					</div>
-					<div class="form-row monthday-selection"  data-nodetype="Weekday">
-						Month
+					<div class="form-row gmonthday-selection"  data-nodetype="gMonthday">
+						<span class="inline">
+							<label for="node-input-sc8Jan" >Jan</label>
+							<input type="checkbox" id="node-input-sc8Jan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Feb" >Feb</label>
+							<input type="checkbox" id="node-input-sc8Feb"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Mar" >Mar</label>
+							<input type="checkbox" id="node-input-sc8Mar"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Apr" >Apr</label>
+							<input type="checkbox" id="node-input-sc8Apr"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8May" >May</label>
+							<input type="checkbox" id="node-input-sc8May"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Jun" >Jun</label>
+							<input type="checkbox" id="node-input-sc8Jun"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Jul" >Jul</label>
+							<input type="checkbox" id="node-input-sc8Jul"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Aug" >Aug</label>
+							<input type="checkbox" id="node-input-sc8Aug"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Sep" >Sep</label>
+							<input type="checkbox" id="node-input-sc8Sep"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Oct" >Oct</label>
+							<input type="checkbox" id="node-input-sc8Oct"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Nov" >Nov</label>
+							<input type="checkbox" id="node-input-sc8Nov"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Dec" >Dec</label>
+							<input type="checkbox" id="node-input-sc8Dec"  />
+						</span>
+						<br />
+						<label for="node-input-sc8gmonthdays" title="Leave empty for all">Select Days</label>
+						<input type="text" patteran="d{1,2}(,d{1,2})*" id="node-input-sc8gmonthdays" placeholder="1,4,5,8,29"/>
+					</div>
+					<div class="form-row jmonthday-selection"  data-nodetype="jMonthday">
+						<span class="inline">
+							<label for="node-input-sc8Nisan" >Nisan</label>
+							<input type="checkbox" id="node-input-sc8Nisan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Iyar" >Iyar</label>
+							<input type="checkbox" id="node-input-sc8Iyar"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Sivan" >Sivan</label>
+							<input type="checkbox" id="node-input-sc8Sivan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Tamuz" >Tamuz</label>
+							<input type="checkbox" id="node-input-sc8Tamuz"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Av" >Av</label>
+							<input type="checkbox" id="node-input-sc8Av"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Elul" >Elul</label>
+							<input type="checkbox" id="node-input-sc8Elul"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Tishri" >Tishri</label>
+							<input type="checkbox" id="node-input-sc8Tishri"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Heshvan" >Cheshvan</label>
+							<input type="checkbox" id="node-input-sc8Heshvan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Kislev" >Kislev</label>
+							<input type="checkbox" id="node-input-sc8Kislev"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Tevet" >Tevet</label>
+							<input type="checkbox" id="node-input-sc8Tevet"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Shevat" >Shevat</label>
+							<input type="checkbox" id="node-input-sc8Shevat"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Adar1" >Adar I</label>
+							<input type="checkbox" id="node-input-sc8Adar1"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc8Adar2" >Adar, Adar II</label>
+							<input type="checkbox" id="node-input-sc8Adar2"  />
+						</span>
+						<br />
+						<label for="node-input-sc8jmonthdays" title="Leave empty for all">Select Days</label>
+						<input type="text" patteran="d{1,2}(,d{1,2})*" id="node-input-sc8jmonthdays" placeholder="1,4,5,8,29"/>
 					</div>
 				</div>
 		
 
-				<div class="js-dateentry entry expanded-vis" >
+				<div class="js-entry entry expanded-vis" >
 					<div class="form-row"  data-nodetype="DateActive">
 						<label for="node-input-sc9DateActive" >Active</label>
-						<input type="checkbox" id="node-input-sc9DateActive" class="js-timer-active" />
+						<input type="checkbox" id="node-input-sc9DateActive" class="js-active" />
 					</div>
 					<div class="form-row"  data-nodetype="DateAction">
 						<label for="node-input-sc9DateAction" >Action:</label>
 						<select id="node-input-sc9DateAction" >
-							<option value="1">Include</option>
+							<option value="1" class="reginclude">Include</option>
+							<option value="2" class="specialinclude">Include</option>
+							<option value="2" class="onlyinclude">Include Only</option>
 							<option value="0">Exclude</option>
 						</select>
 					</div>
 					<div class="form-row" data-nodetype="Datetype">
-						<label for="node-input-sc9Datetype" >Time Type</label>
+						<label for="node-input-sc9Datetype" >Date Type</label>
 						<select id="node-input-sc9Datetype"  class="js-datetype">
 							<option value="weekday">Weekdays</option>
-							<option value="monthday">Dates</option>
+							<option value="jmonthday">Jewish Dates</option>
+							<option value="gmonthday">Gregorian Dates</option>
 						</select>
 					</div>
 					<div class="form-row weekday-selection"  data-nodetype="Weekday">
-						Weekday
+						<span class="inline">
+							<label for="node-input-sc9Sun" >Sunday</label>
+							<input type="checkbox" id="node-input-sc9Sun" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Mon" >Monday</label>
+							<input type="checkbox" id="node-input-sc9Mon"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Tue" >Tuesday</label>
+							<input type="checkbox" id="node-input-sc9Tue"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Wed" >Wednesday</label>
+							<input type="checkbox" id="node-input-sc9Wed"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Thu" >Thursday</label>
+							<input type="checkbox" id="node-input-sc9Thu" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Fri" >Friday</label>
+							<input type="checkbox" id="node-input-sc9Fri" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Sat" >Saturday</label>
+							<input type="checkbox" id="node-input-sc9Sat"  />
+						</span>
 					</div>
-					<div class="form-row monthday-selection"  data-nodetype="Weekday">
-						Month
+					<div class="form-row gmonthday-selection"  data-nodetype="gMonthday">
+						<span class="inline">
+							<label for="node-input-sc9Jan" >Jan</label>
+							<input type="checkbox" id="node-input-sc9Jan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Feb" >Feb</label>
+							<input type="checkbox" id="node-input-sc9Feb"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Mar" >Mar</label>
+							<input type="checkbox" id="node-input-sc9Mar"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Apr" >Apr</label>
+							<input type="checkbox" id="node-input-sc9Apr"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9May" >May</label>
+							<input type="checkbox" id="node-input-sc9May"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Jun" >Jun</label>
+							<input type="checkbox" id="node-input-sc9Jun"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Jul" >Jul</label>
+							<input type="checkbox" id="node-input-sc9Jul"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Aug" >Aug</label>
+							<input type="checkbox" id="node-input-sc9Aug"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Sep" >Sep</label>
+							<input type="checkbox" id="node-input-sc9Sep"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Oct" >Oct</label>
+							<input type="checkbox" id="node-input-sc9Oct"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Nov" >Nov</label>
+							<input type="checkbox" id="node-input-sc9Nov"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Dec" >Dec</label>
+							<input type="checkbox" id="node-input-sc9Dec"  />
+						</span>
+						<br />
+						<label for="node-input-sc9gmonthdays" title="Leave empty for all">Select Days</label>
+						<input type="text" patteran="d{1,2}(,d{1,2})*" id="node-input-sc9gmonthdays" placeholder="1,4,5,8,29"/>
+					</div>
+					<div class="form-row jmonthday-selection"  data-nodetype="jMonthday">
+						<span class="inline">
+							<label for="node-input-sc9Nisan" >Nisan</label>
+							<input type="checkbox" id="node-input-sc9Nisan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Iyar" >Iyar</label>
+							<input type="checkbox" id="node-input-sc9Iyar"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Sivan" >Sivan</label>
+							<input type="checkbox" id="node-input-sc9Sivan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Tamuz" >Tamuz</label>
+							<input type="checkbox" id="node-input-sc9Tamuz"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Av" >Av</label>
+							<input type="checkbox" id="node-input-sc9Av"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Elul" >Elul</label>
+							<input type="checkbox" id="node-input-sc9Elul"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Tishri" >Tishri</label>
+							<input type="checkbox" id="node-input-sc9Tishri"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Heshvan" >Cheshvan</label>
+							<input type="checkbox" id="node-input-sc9Heshvan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Kislev" >Kislev</label>
+							<input type="checkbox" id="node-input-sc9Kislev"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Tevet" >Tevet</label>
+							<input type="checkbox" id="node-input-sc9Tevet"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Shevat" >Shevat</label>
+							<input type="checkbox" id="node-input-sc9Shevat"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Adar1" >Adar I</label>
+							<input type="checkbox" id="node-input-sc9Adar1"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc9Adar2" >Adar, Adar II</label>
+							<input type="checkbox" id="node-input-sc9Adar2"  />
+						</span>
+						<br />
+						<label for="node-input-sc9jmonthdays" title="Leave empty for all">Select Days</label>
+						<input type="text" patteran="d{1,2}(,d{1,2})*" id="node-input-sc9jmonthdays" placeholder="1,4,5,8,29"/>
 					</div>
 				</div>
 		
 
-				<div class="js-dateentry entry expanded-vis" >
+				<div class="js-entry entry expanded-vis" >
 					<div class="form-row"  data-nodetype="DateActive">
 						<label for="node-input-sc10DateActive" >Active</label>
-						<input type="checkbox" id="node-input-sc10DateActive" class="js-timer-active" />
+						<input type="checkbox" id="node-input-sc10DateActive" class="js-active" />
 					</div>
 					<div class="form-row"  data-nodetype="DateAction">
 						<label for="node-input-sc10DateAction" >Action:</label>
 						<select id="node-input-sc10DateAction" >
-							<option value="1">Include</option>
+							<option value="1" class="reginclude">Include</option>
+							<option value="2" class="specialinclude">Include</option>
+							<option value="2" class="onlyinclude">Include Only</option>
 							<option value="0">Exclude</option>
 						</select>
 					</div>
 					<div class="form-row" data-nodetype="Datetype">
-						<label for="node-input-sc10Datetype" >Time Type</label>
+						<label for="node-input-sc10Datetype" >Date Type</label>
 						<select id="node-input-sc10Datetype"  class="js-datetype">
 							<option value="weekday">Weekdays</option>
-							<option value="monthday">Dates</option>
+							<option value="jmonthday">Jewish Dates</option>
+							<option value="gmonthday">Gregorian Dates</option>
 						</select>
 					</div>
 					<div class="form-row weekday-selection"  data-nodetype="Weekday">
-						Weekday
+						<span class="inline">
+							<label for="node-input-sc10Sun" >Sunday</label>
+							<input type="checkbox" id="node-input-sc10Sun" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Mon" >Monday</label>
+							<input type="checkbox" id="node-input-sc10Mon"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Tue" >Tuesday</label>
+							<input type="checkbox" id="node-input-sc10Tue"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Wed" >Wednesday</label>
+							<input type="checkbox" id="node-input-sc10Wed"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Thu" >Thursday</label>
+							<input type="checkbox" id="node-input-sc10Thu" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Fri" >Friday</label>
+							<input type="checkbox" id="node-input-sc10Fri" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Sat" >Saturday</label>
+							<input type="checkbox" id="node-input-sc10Sat"  />
+						</span>
 					</div>
-					<div class="form-row monthday-selection"  data-nodetype="Weekday">
-						Month
+					<div class="form-row gmonthday-selection"  data-nodetype="gMonthday">
+						<span class="inline">
+							<label for="node-input-sc10Jan" >Jan</label>
+							<input type="checkbox" id="node-input-sc10Jan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Feb" >Feb</label>
+							<input type="checkbox" id="node-input-sc10Feb"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Mar" >Mar</label>
+							<input type="checkbox" id="node-input-sc10Mar"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Apr" >Apr</label>
+							<input type="checkbox" id="node-input-sc10Apr"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10May" >May</label>
+							<input type="checkbox" id="node-input-sc10May"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Jun" >Jun</label>
+							<input type="checkbox" id="node-input-sc10Jun"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Jul" >Jul</label>
+							<input type="checkbox" id="node-input-sc10Jul"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Aug" >Aug</label>
+							<input type="checkbox" id="node-input-sc10Aug"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Sep" >Sep</label>
+							<input type="checkbox" id="node-input-sc10Sep"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Oct" >Oct</label>
+							<input type="checkbox" id="node-input-sc10Oct"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Nov" >Nov</label>
+							<input type="checkbox" id="node-input-sc10Nov"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Dec" >Dec</label>
+							<input type="checkbox" id="node-input-sc10Dec"  />
+						</span>
+						<br />
+						<label for="node-input-sc10gmonthdays" title="Leave empty for all">Select Days</label>
+						<input type="text" patteran="d{1,2}(,d{1,2})*" id="node-input-sc10gmonthdays" placeholder="1,4,5,8,29"/>
+					</div>
+					<div class="form-row jmonthday-selection"  data-nodetype="jMonthday">
+						<span class="inline">
+							<label for="node-input-sc10Nisan" >Nisan</label>
+							<input type="checkbox" id="node-input-sc10Nisan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Iyar" >Iyar</label>
+							<input type="checkbox" id="node-input-sc10Iyar"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Sivan" >Sivan</label>
+							<input type="checkbox" id="node-input-sc10Sivan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Tamuz" >Tamuz</label>
+							<input type="checkbox" id="node-input-sc10Tamuz"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Av" >Av</label>
+							<input type="checkbox" id="node-input-sc10Av"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Elul" >Elul</label>
+							<input type="checkbox" id="node-input-sc10Elul"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Tishri" >Tishri</label>
+							<input type="checkbox" id="node-input-sc10Tishri"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Heshvan" >Cheshvan</label>
+							<input type="checkbox" id="node-input-sc10Heshvan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Kislev" >Kislev</label>
+							<input type="checkbox" id="node-input-sc10Kislev"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Tevet" >Tevet</label>
+							<input type="checkbox" id="node-input-sc10Tevet"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Shevat" >Shevat</label>
+							<input type="checkbox" id="node-input-sc10Shevat"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Adar1" >Adar I</label>
+							<input type="checkbox" id="node-input-sc10Adar1"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc10Adar2" >Adar, Adar II</label>
+							<input type="checkbox" id="node-input-sc10Adar2"  />
+						</span>
+						<br />
+						<label for="node-input-sc10jmonthdays" title="Leave empty for all">Select Days</label>
+						<input type="text" patteran="d{1,2}(,d{1,2})*" id="node-input-sc10jmonthdays" placeholder="1,4,5,8,29"/>
 					</div>
 				</div>
 		

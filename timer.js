@@ -4,10 +4,15 @@ module.exports = function(RED) {
 	"use strict"
 	const HeDate = require('he-date');
 	const kosherZmamin = require('kosher-zmanim');
-	
+	// new 
 	function getHeDateMonth(hedate) {
-		return hedate.toDateString().match(/^.+?\d\d (.+) \d{4}$/)[1];
+		let month = hedate.toDateString().match(/^.+?\d\d (.+) \d{4}$/)[1];
+		// for adar we'll only deal with adar1 and adar2.
+		if(month == "Adar I") return "Adar1";
+		if(month.startsWith("Adar")) return "Adar2";
+		return month;
 	}
+	
 	function isEventInHolidays(month, day, evt){
 		return holidays[month] && holidays[month][day] && holidays[month][day][evt];
 	}
