@@ -16,7 +16,7 @@
 		for(let i=0;i<DAYS_COUNT;i++){
 			const id = i+1;
 			obj[`sc${id}DateActive`] = {value: false};
-			// obj[`sc${id}DateAction`] = {value:0};
+			obj[`sc${id}DateAction`] = {value:0};
 			obj[`sc${id}Datetype`] = {value:"weekday"};
 			obj[`sc${id}Sun`] = {value:1};
 			obj[`sc${id}Mon`] = {value:1};
@@ -50,6 +50,8 @@
 			obj[`sc${id}Shvat`] = {value:1};
 			obj[`sc${id}Adar1`] = {value:1};
 			obj[`sc${id}Adar2`] = {value:1};
+			obj[`sc${id}jmonthdays`] = {};
+			obj[`sc${id}gmonthdays`] = {};
 			
 		}
 		return obj;
@@ -65,8 +67,12 @@
 			lon: {value: 0, required:true},
 			diaspora: {value:true},
 			topic: {value:""},
-			onMsg: {value: "ON"},
-			offMsg: {value: "OFF"},
+			onmsg: {value: "ON"},
+			offmsg: {value: "OFF"},
+			forceinactive: {value: true},
+			forceinactivefullday: {value:false},
+			inactiveoffset: {value:1},
+			inactiveoffsettype: {value:3600000},
 			...timerDefaults,
 			
 			
@@ -76,8 +82,7 @@
 			delaytype: {value:60000}
         },
         inputs:1,
-        outputs:2,
-		outputLabels: ["In Effect", "Not in Effect"],
+        outputs:1,
         icon: "switch.png",
         label: function() {
             return this.name||"Jewish Timer";
@@ -112,6 +117,20 @@
 					$(e.target).parents(".js-entry").addClass("active");
 				} else {
 					$(e.target).parents(".js-entry").removeClass("active");
+				}
+			});
+			$(".js-inactive").change(e=>{
+				if(!e.target.checked){
+					$(".inactive-rel").hide();
+				} else {
+					$(".inactive-rel").show();
+				}
+			});
+			$(".js-inactive-full").change(e=>{
+				if(e.target.checked){
+					$(".inactive-partial").hide();
+				} else {
+					$(".inactive-partial").show();
 				}
 			});
         }
@@ -162,6 +181,23 @@
     <div class="form-row">
 		<label for="node-input-offmsg"><i class="fa fa-envelop"></i>Off MSG</label>
 		<input type="text" id="node-input-offmsg" placeholder="OFF" value="OFF" />
+	</div>
+	<div class="form-row">
+		<label for="node-input-forceinactive" class="auto">Force subsequent Nodes to be inactive:</label>
+		<input type="checkbox" id="node-input-forceinactive" class="auto js-inactive" />
+	</div>
+	<div class="form-row inactive-rel">
+		<label for="node-input-forceinactivefullday" class="auto">Force Inactive for full day(00:00 - 11:59:59):</label>
+		<input type="checkbox" id="node-input-forceinactivefullday" class="auto js-inactive-full"/>
+	</div>
+	<div class="form-row inactive-rel inactive-partial">
+		<label for="node-input-inactiveoffset" class="auto">Inactive Offset after last msg:</label>
+		<input type="number" id="node-input-inactiveoffset" placeholder="0">
+		<select id="node-input-inactiveoffsettype" >
+			<option value="1000">Seconds</option>
+			<option value="60000" selected="selected">Minutes</option>
+			<option value="3600000">Hours</option>
+		</select>
 	</div>
 	<hr/>
 	<style>
@@ -249,10 +285,10 @@
 		.entry [data-nodetype="Zmanoffset"] label{
 			width:40px;
 		}
-		.entry [data-nodetype="Zmanoffset"] input{
+		.entry [data-nodetype="Zmanoffset"] input, .red-ui-editor div div.inactive-partial input{
 			width:58px;
 		}
-		.entry [data-nodetype="Zmanoffset"] select{
+		.entry [data-nodetype="Zmanoffset"] select, div div.inactive-partial select{
 			width:110px;
 		}
 		.datetype-jmonthday .weekday-selection, .datetype-gmonthday .weekday-selection,
@@ -281,6 +317,12 @@
 		.red-ui-editor .form-row span.inline input {
 			width: auto;
 			vertical-align: top;
+		}
+		div.red-ui-editor div.form-row *.auto {
+			width:auto;
+		}
+		div.red-ui-editor div.form-row input.auto{
+			vertical-align:top;
 		}
 	</style>
 	<div id="schedule-container" class="expend-container collapsed">
