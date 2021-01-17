@@ -25,15 +25,17 @@ module.exports = function(RED) {
 			msg: {
 				topic: config.topic,
 			},
-			delay: Number(config.delay) && Number(config.delaytype) * Number(config.delay),
 			timeout: null,
-			startTime: new Date(),
 			todaysSchedules: [],
 			active: true,
 			incomingMsg: null,
 		}
 		function sendMsg(){
+			try{
 			node.send(node.state.msg);
+			}catch(e){
+				console.error("Error sending msg",e)
+			}
 		}
 		function startSchedule(){
 			// starts the process when node starts
@@ -44,6 +46,7 @@ module.exports = function(RED) {
 			clearTimeout(node.state.timeout);
 			const evt = node.state.todaysSchedules.shift();
 			node.state.msg.payload = Number(evt.action) ? config.onmsg : config.offmsg;
+			node.state.msg.time = evt.time;
 			sendMsg();
 			scheduleNextEvt();
 		}
@@ -60,15 +63,17 @@ module.exports = function(RED) {
 				tom.setMilliseconds(0);
 				node.state.timeout = setTimeout(startTodaysScheules,tom.getTime() - Date.now());
 			}
+			setStatus();
 		}
 		function startTodaysScheules(){
-			if(!node.state.active) return;
+			if(!node.state.active) {
+				scheduleNextEvt(); // will just set up tomorrows call;
+				return;
+			}
 			// collects schedules, runs last past due schedule for today, and sets timer
 			node.state.todaysSchedules = getTodaysSchedules();
-			let i = 1;
-			while(i < node.state.todaysSchedules.length && node.state.todaysSchedules[i].time <= Date.now()){
+			while(node.state.todaysSchedules[1] && node.state.todaysSchedules[1].time <= Date.now()){
 				node.state.todaysSchedules.shift();
-				++i;
 			}
 			if(node.state.todaysSchedules.length){
 				if(config.forceinactive){
@@ -87,7 +92,7 @@ module.exports = function(RED) {
 					}
 				}
 			}
-			if(node.state.todaysSchedules[0].time <= Date.now()){
+			if(node.state.todaysSchedules[0] && node.state.todaysSchedules[0].time <= Date.now()){
 				execSchedule();
 			} else {
 				scheduleNextEvt();
@@ -192,24 +197,54 @@ module.exports = function(RED) {
 		function setInactiveUntil(time){
 			if(time > Date.now()){
 				node.state.active = false;
+				node.state.inactiveUntil = time;
 				clearTimeout(node.state.timeout);
 				node.state.timeout = setTimeout(()=>{
 					node.state.active = true;
+					node.state.inactiveUntil = null;
+					// TODO: do we need to worry about race conditions?
 					startSchedule();
 				}, time - Date.now());
 				node.send(node.state.incomingMsg);
 			}
+			setStatus();
+		}
+		function setStatus(){
+			if(!node.state.active){
+				const until = new Date(node.state.inactiveUntil);
+				node.status({
+					fill: "yellow",
+					shape: "dot",
+					text: `Passthrough mode until: ${until.toLocaleString()}`
+				})
+				return;
+			}
+			const nextSchedule = node.state.todaysSchedules[0]
+			let nextScheduleStr = "";
+			let currScheduleStr = "";
+			if(nextSchedule){
+				nextScheduleStr = `Next Sechedule: ${(new Date(nextSchedule.time)).toLocaleString()}, Action: ${Number(nextSchedule.action)? "ON" : "OFF"}`;
+			}
+			if(node.state.msg.payload){
+				currScheduleStr = node.state.msg.payload + ", "
+			}
+			node.status({
+				fill: currScheduleStr ? (node.state.msg.payload  === "ON" ? "green" :  "red") : nextSchedule ? (Number(nextSchedule.action) ? "green" : "red") : "grey",
+				shape: currScheduleStr ? "dot" : nextScheduleStr ? "ring" : "dot",
+				text: (currScheduleStr + nextScheduleStr) || "No Schedule Today"
+			})
 		}
 		// entry point
-		startSchedule();
+		// wait 2 seconds so node red has calmed down and can send msgs
+		setTimeout(startSchedule,2000);
 		
         node.on('input', function(msg) {
 			node.state.incomingMsg = msg;
-			if(msg.forceInactiveUntil){
-				setInactiveUntil(msg.forceInactiveUntil);
-			}
 			if(!config.topic && msg.topic){
 				node.state.msg.topic = msg.topic;
+			}
+			if(msg.forceInactiveUntil){
+				setInactiveUntil(msg.forceInactiveUntil);
 			}
         });
 		node.on('close', function(){
