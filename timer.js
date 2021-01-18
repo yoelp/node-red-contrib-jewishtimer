@@ -66,6 +66,7 @@ module.exports = function(RED) {
 			setStatus();
 		}
 		function startTodaysScheules(){
+			let sendMsgRegardless = false;
 			if(!node.state.active) {
 				scheduleNextEvt(); // will just set up tomorrows call;
 				return;
@@ -83,8 +84,7 @@ module.exports = function(RED) {
 						date.setMinutes(59);
 						date.setSeconds(59);
 						node.state.msg.forceInactiveUntil = date.getTime();
-						// send msg right away to force inactive
-						sendMsg();
+						sendMsgRegardless = true;
 					} else {
 						const time = node.state.todaysSchedules[node.state.todaysSchedules.length -1].time + Number(config.inactiveoffset) * Number(config.inactiveoffsettype);
 						node.state.msg.forceInactiveUntil = time;
@@ -96,6 +96,8 @@ module.exports = function(RED) {
 				execSchedule();
 			} else {
 				scheduleNextEvt();
+				// force inactive
+				sendMsgRegardless && sendMsg();
 			}
 		}
 		function getTodaysSchedules(){
@@ -111,52 +113,28 @@ module.exports = function(RED) {
 			const events = [];
 			for(let i=0;i<DAYS_COUNT;i++){
 				if(config[`sc${i}DateActive`]) {
+					// selected dates set up
+					const gDateSel = config[`sc${i}Datetype`] === "gmonthday" && 
+						config[`sc${i}${gMonth}`] && 
+						config[`sc${i}gmonthdays`].split(",").includes(gDay);
+					const jDateSel = config[`sc${i}Datetype`] === "jmonthday" && 
+						config[`sc${i}${jMonth}`] && 
+						config[`sc${i}jmonthdays`].split(",").includes(jDay);
+					const weekdaySel = config[`sc${i}Datetype`] === "weekday" && 
+						config[`sc${i}${weekday}`];
 					// Rule is Active
 					switch(config[`sc${i}DateAction`]){
 						case 0:
 							// exclude
-							dayActive = dayActive && !( 
-									config[`sc${i}Datetype`] === "gmonthday" && 
-									config[`sc${i}${gMonth}`] && 
-									config[`sc${i}gmonthdays`].split(",").includes(gDay)
-								) && !( 
-									config[`sc${i}Datetype`] === "jmonthday" && 
-									config[`sc${i}${jMonth}`] && 
-									config[`sc${i}jmonthdays`].split(",").includes(jDay)
-								) && !( 
-									config[`sc${i}Datetype`] === "weekday" && 
-									config[`sc${i}${weekday}`]
-								);
+							dayActive = dayActive && !gDateSel && !jDateSel && !weekdaySel;
 							break;
 						case 1:
 							// include
-							dayActive = dayActive || ( 
-									config[`sc${i}Datetype`] === "gmonthday" && 
-									config[`sc${i}${gMonth}`] && 
-									config[`sc${i}gmonthdays`].split(",").includes(gDay)
-								) || ( 
-									config[`sc${i}Datetype`] === "jmonthday" && 
-									config[`sc${i}${jMonth}`] && 
-									config[`sc${i}jmonthdays`].split(",").includes(jDay)
-								) || ( 
-									config[`sc${i}Datetype`] === "weekday" && 
-									config[`sc${i}${weekday}`]
-								);
+							dayActive = dayActive || gDateSel || jDateSel || weekdaySel;
 							break;
 						case 2:
 							// only include;
-							dayActive = dayActive && ( 
-									config[`sc${i}Datetype`] === "gmonthday" && 
-									config[`sc${i}${gMonth}`] && 
-									config[`sc${i}gmonthdays`].split(",").includes(gDay)
-								) && ( 
-									config[`sc${i}Datetype`] === "jmonthday" && 
-									config[`sc${i}${jMonth}`] && 
-									config[`sc${i}jmonthdays`].split(",").includes(jDay)
-								) && ( 
-									config[`sc${i}Datetype`] === "weekday" && 
-									config[`sc${i}${weekday}`]
-								);
+							dayActive = dayActive && (gDateSel || jDateSel || weekdaySel);
 							break;
 						default:
 							// act as if inactive
