@@ -124,15 +124,15 @@ module.exports = function(RED) {
 						config[`sc${i}${weekday}`];
 					// Rule is Active
 					switch(config[`sc${i}DateAction`]){
-						case 0:
+						case "0":
 							// exclude
 							dayActive = dayActive && !gDateSel && !jDateSel && !weekdaySel;
 							break;
-						case 1:
+						case "1":
 							// include
 							dayActive = dayActive || gDateSel || jDateSel || weekdaySel;
 							break;
-						case 2:
+						case "2":
 							// only include;
 							dayActive = dayActive && (gDateSel || jDateSel || weekdaySel);
 							break;
