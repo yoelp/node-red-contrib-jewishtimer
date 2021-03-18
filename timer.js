@@ -8,7 +8,7 @@ module.exports = function(RED) {
 		return ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][month];
 	}
 	function getWeekday(weekday){
-		return ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"][weekday];
+		return ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][weekday];
 	}
 	function getHeDateMonth(hedate) {
 		let month = hedate.toDateString().match(/^.+?\d\d (.+) \d{4}$/)[1];
