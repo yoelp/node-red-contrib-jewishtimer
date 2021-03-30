@@ -116,10 +116,10 @@ module.exports = function(RED) {
 					// selected dates set up
 					const gDateSel = config[`sc${i}Datetype`] === "gmonthday" && 
 						config[`sc${i}${gMonth}`] && 
-						config[`sc${i}gmonthdays`].split(",").includes(gDay);
+						config[`sc${i}gmonthdays`].split(",").includes(String(gDay));
 					const jDateSel = config[`sc${i}Datetype`] === "jmonthday" && 
 						config[`sc${i}${jMonth}`] && 
-						config[`sc${i}jmonthdays`].split(",").includes(jDay);
+						config[`sc${i}jmonthdays`].split(",").includes(String(jDay));
 					const weekdaySel = config[`sc${i}Datetype`] === "weekday" && 
 						config[`sc${i}${weekday}`];
 					// Rule is Active
