@@ -46,6 +46,7 @@ module.exports = function(RED) {
 			clearTimeout(node.state.timeout);
 			const evt = node.state.todaysSchedules.shift();
 			node.state.msg.payload = Number(evt.action) ? config.onmsg : config.offmsg;
+			node.state.action = Number(evt.action);
 			node.state.msg.time = evt.time;
 			sendMsg();
 			scheduleNextEvt();
@@ -87,7 +88,7 @@ module.exports = function(RED) {
 						sendMsgRegardless = true;
 					} else {
 						const time = node.state.todaysSchedules[node.state.todaysSchedules.length -1].time + Number(config.inactiveoffset) * Number(config.inactiveoffsettype);
-						node.state.msg.forceInactiveUntil = time;
+						node.state.msg.forceInactiveUntil = time; // TBD MAYBE: allow forcing inactive for x after each schedule.
 						// not sending msg now, it will go with next schedule;
 					}
 				}
@@ -101,7 +102,6 @@ module.exports = function(RED) {
 			}
 		}
 		function getTodaysSchedules(){
-			//maybe change to get 2 days schedules
 			const date = new Date();
 			const jDate = new HeDate();
 			const weekday = getWeekday(date.getDay());
@@ -180,10 +180,8 @@ module.exports = function(RED) {
 				node.state.timeout = setTimeout(()=>{
 					node.state.active = true;
 					node.state.inactiveUntil = null;
-					// TODO: do we need to worry about race conditions?
 					startSchedule();
 				}, time - Date.now());
-				node.send(node.state.incomingMsg);
 			}
 			setStatus();
 		}
@@ -207,7 +205,7 @@ module.exports = function(RED) {
 				currScheduleStr = node.state.msg.payload + ", "
 			}
 			node.status({
-				fill: currScheduleStr ? (node.state.msg.payload  === "ON" ? "green" :  "red") : nextSchedule ? (Number(nextSchedule.action) ? "green" : "red") : "grey",
+				fill: currScheduleStr ? (node.state.action ? "green" :  "red") : nextSchedule ? (Number(nextSchedule.action) ? "green" : "red") : "grey",
 				shape: currScheduleStr ? "dot" : nextScheduleStr ? "ring" : "dot",
 				text: (currScheduleStr + nextScheduleStr) || "No Schedule Today"
 			})
@@ -218,12 +216,14 @@ module.exports = function(RED) {
 		
         node.on('input', function(msg) {
 			node.state.incomingMsg = msg;
+			// TBR: why is this needed
 			if(!config.topic && msg.topic){
 				node.state.msg.topic = msg.topic;
 			}
 			if(msg.forceInactiveUntil){
 				setInactiveUntil(msg.forceInactiveUntil);
 			}
+			node.send(node.state.incomingMsg);
         });
 		node.on('close', function(){
 			clearTimeout(node.state.timeout);
