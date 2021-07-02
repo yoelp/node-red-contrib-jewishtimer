@@ -14,7 +14,8 @@
     "he-date": "^1.2.2",
     "kosher-zmanim": "^0.7.1"
   },
-  "scripts" : {
-  	"build": "node ./build"
-  }
+  "scripts": {
+    "build": "node ./build"
+  },
+  "devDependencies": {}
 }

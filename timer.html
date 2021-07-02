@@ -2587,5 +2587,54 @@
 </script>
 
 <script type="text/html" data-help-name="jewish-timer">
-
+	<h1 id="jewish-timer">Jewish Timer</h1>
+	<h2 id="overview">Overview</h2>
+	<p>Jewish Timer allows you to set schedules by weekday, Gregorian Calendar and Jewish Calendar.</p>
+	<p>Schedules can be set to a specific time or based on Jewish Zmanim.</p>
+	<p>It allows for up to 10 schedules per day, and lets you set up to 10 date selections,<br>each date selection can either include, exclude or limit to a specific date (or group dates).</p>
+	<p>It also allows chaining timers one on top of the other.<br>The top one can silence the next one, this allows you to<br>set a default weekly schedule and then add custom schedules for special dates.</p>
+	<h2 id="options">Options</h2>
+	<h3 id="lat-required-">Lat (required)</h3>
+	<p>The Latitude to calculate the Zmanim.</p>
+	<h3 id="lon-required-">Lon (required)</h3>
+	<p>The Longitude to calculate the Zmanim.</p>
+	<h3 id="topic">Topic</h3>
+	<p>A MQTT topic to post to</p>
+	<h3 id="on-msg">On Msg</h3>
+	<p>The Msg to send on the ON event</p>
+	<h3 id="off-msg">Off Msg</h3>
+	<p>The Msg to send on the OFF event</p>
+	<h3 id="force-subsequent-nodes-to-be-inactive">Force subsequent Nodes to be inactive</h3>
+	<h3 id="force-inactive-for-full-day-00-00-11-59-59-">Force Inactive for full day(00:00 - 11:59:59)</h3>
+	<h3 id="inactive-offset-after-last-msg">Inactive Offset after last msg</h3>
+	<p>We can force schdules node behind this one to be inactive, eihter for a set time after the last schedule or for the full day.&#39;</p>
+	<hr>
+	<h3 id="set-schedule-times">Set Schedule Times</h3>
+	<p>This is where you set the time and action for a schedule</p>
+	<h4 id="active">Active</h4>
+	<p>Allows you to temporarily inactivate a schedule</p>
+	<h4 id="action">Action</h4>
+	<p>The Action to happen at the set time</p>
+	<h4 id="time-type">Time Type</h4>
+	<p>You can set a specific time or a zman based time</p>
+	<h4 id="time-depending-on-earlier-selection-">Time (depending on earlier selection)</h4>
+	<p>The time for the event</p>
+	<h4 id="zman-depending-on-earlier-selection-">Zman (depending on earlier selection)</h4>
+	<p>At which zman the event should run</p>
+	<h4 id="offset-depending-on-earlier-selection-">Offset (depending on earlier selection)</h4>
+	<p>You can set A positive or negetive offset to a zman</p>
+	<h3 id="set-schedule-dates">Set Schedule Dates</h3>
+	<p>This is where you set the date a schedule should be active</p>
+	<h4 id="active">Active</h4>
+	<p>Allows you to temporarily inactivate a selection</p>
+	<h4 id="action">Action</h4>
+	<p>whether the selected date should be added to the active dates or excluded, from the second date selection and on you can also choose to &quot;only include&quot;, which will limit the schedule to only the current date selection (given it was enabled by a previous selection). </p>
+	<blockquote>
+	<p><strong><em>With these Date selection options you can combine date filters across different selections (Ex: only run on Summer Sundays, or just Shabbos Erev Pasech).</em></strong></p>
+	</blockquote>
+	<h4 id="date-type">Date Type</h4>
+	<p>Which type of Date to use for the filter (greg, jewish, or weekday).<br>Based on the date type you can either select weekdays or months and the days in a Month. </p>
+	<blockquote>
+	<p>Note: Days in month needs to be a comma delimited list (an empty list will be not be active)</p>
+	</blockquote>
 </script>
