@@ -49,7 +49,7 @@ module.exports = function(RED) {
 			node.state.action = Number(evt.action);
 			node.state.msg.time = evt.time;
 			sendMsg();
-			scheduleNextEvt();
+			scheduleNextEvt(); // will also set the status
 		}
 		function scheduleNextEvt(){
 			// schedules next evt for today or tomorrows day start
@@ -68,12 +68,12 @@ module.exports = function(RED) {
 		}
 		function startTodaysScheules(){
 			let sendMsgRegardless = false;
-			if(!node.state.active) {
+			if(!node.state.active) { // if it becomes active midday, the function will be called.
 				scheduleNextEvt(); // will just set up tomorrows call;
 				return;
 			}
-			// collects schedules, runs last past due schedule for today, and sets timer
 			node.state.todaysSchedules = getTodaysSchedules();
+			// only keep one past due schedule
 			while(node.state.todaysSchedules[1] && node.state.todaysSchedules[1].time <= Date.now()){
 				node.state.todaysSchedules.shift();
 			}
@@ -145,7 +145,6 @@ module.exports = function(RED) {
 			if(dayActive){
 				// gather events
 					for(let i = 0; i< TIMER_COUNT; i++){
-						// TODO check if its a bool
 						if(config[`sc${i}TimeActive`]){
 							if(config[`sc${i}Timetype`] == "time"){
 								const [hrs,mins] = config[`sc${i}Time`].split(":");
@@ -202,7 +201,7 @@ module.exports = function(RED) {
 				nextScheduleStr = `Next Sechedule: ${(new Date(nextSchedule.time)).toLocaleString()}, Action: ${Number(nextSchedule.action)? "ON" : "OFF"}`;
 			}
 			if(node.state.msg.payload){
-				currScheduleStr = node.state.msg.payload + ", "
+				currScheduleStr = Number(node.state.msg.action) ? "ON" : "OFF" + ", "
 			}
 			node.status({
 				fill: currScheduleStr ? (node.state.action ? "green" :  "red") : nextSchedule ? (Number(nextSchedule.action) ? "green" : "red") : "grey",

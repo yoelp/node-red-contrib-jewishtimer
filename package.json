@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-jewishtimer",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "A Timer for node-red which supports jewish dates and Zmanim",
   "node-red": {
     "nodes": {
@@ -9,13 +9,17 @@
   },
   "author": "Yoel Porgesz",
   "license": "MIT",
-  "private": true,
+  "bugs": "https://github.com/yoelp/node-red-contrib-jewishtimer/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yoelp/node-red-contrib-jewishtimer"
+  },
   "dependencies": {
     "he-date": "^1.2.2",
     "kosher-zmanim": "^0.7.1"
   },
+  "keywords": ["node-red", "Jewish timer", "Shabbat", "Shabbos", "Hebrew timer", "schedule", "timer"],
   "scripts": {
     "build": "node ./build"
-  },
-  "devDependencies": {}
+  }
 }
