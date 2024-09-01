@@ -67,9 +67,11 @@ module.exports = function(RED) {
 			setStatus();
 		}
 		function startTodaysScheules(){
+			// clean up msg obj
+			node.state.msg = {};
 			let sendMsgRegardless = false;
-			if(!node.state.active) { // if it becomes active midday, the function will be called.
-				scheduleNextEvt(); // will just set up tomorrows call;
+			if(!node.state.active) { // if it becomes active midday, startTodaysScheules will be called again.
+				scheduleNextEvt(); // will just set up tomorrows call, for when does not become active today;
 				return;
 			}
 			node.state.todaysSchedules = getTodaysSchedules();
