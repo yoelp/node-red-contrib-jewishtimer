@@ -69,7 +69,6 @@ module.exports = function(RED) {
 		function startTodaysScheules(){
 			// clean up msg obj
 			node.state.msg = {};
-			let sendMsgRegardless = false;
 			if(!node.state.active) { // if it becomes active midday, startTodaysScheules will be called again.
 				scheduleNextEvt(); // will just set up tomorrows call, for when does not become active today;
 				return;
@@ -87,20 +86,19 @@ module.exports = function(RED) {
 						date.setMinutes(59);
 						date.setSeconds(59);
 						node.state.msg.forceInactiveUntil = date.getTime();
-						sendMsgRegardless = true;
 					} else {
 						const time = node.state.todaysSchedules[node.state.todaysSchedules.length -1].time + Number(config.inactiveoffset) * Number(config.inactiveoffsettype);
 						node.state.msg.forceInactiveUntil = time; // TBD MAYBE: allow forcing inactive for x after each schedule.
-						// not sending msg now, it will go with next schedule;
 					}
 				}
+				// sending now to force inactive
+				sendMsg();
 			}
 			if(node.state.todaysSchedules[0] && node.state.todaysSchedules[0].time <= Date.now()){
-				execSchedule();
+				// running in timeout to make time for this node to become inactive before executing 
+				setTimeout(execSchedule,10);
 			} else {
 				scheduleNextEvt();
-				// force inactive
-				sendMsgRegardless && sendMsg();
 			}
 		}
 		function getTodaysSchedules(){
