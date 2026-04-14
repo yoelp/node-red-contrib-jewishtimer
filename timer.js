@@ -203,7 +203,7 @@ module.exports = function(RED) {
 				nextScheduleStr = `Next Sechedule: ${(new Date(nextSchedule.time)).toLocaleString()}, Action: ${Number(nextSchedule.action)? "ON" : "OFF"}`;
 			}
 			if(node.state.msg.payload){
-				currScheduleStr = Number(node.state.msg.action) ? "ON" : "OFF" + ", "
+				currScheduleStr = (Number(node.state.action) ? "ON" : "OFF") + ", "
 			}
 			node.status({
 				fill: currScheduleStr ? (node.state.action ? "green" :  "red") : nextSchedule ? (Number(nextSchedule.action) ? "green" : "red") : "grey",
