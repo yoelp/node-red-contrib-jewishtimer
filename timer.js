@@ -151,6 +151,8 @@ module.exports = function(RED) {
 								const time = new Date();
 								time.setHours(hrs);
 								time.setMinutes(mins);
+								time.setSeconds(0);
+								time.setMilliseconds(0);
 								events.push({
 									time: time.getTime(),
 									action: config[`sc${i}TimeAction`]
