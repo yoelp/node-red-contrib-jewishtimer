@@ -85,6 +85,7 @@ module.exports = function(RED) {
 						date.setHours(23);
 						date.setMinutes(59);
 						date.setSeconds(59);
+						date.setMilliseconds(999);
 						node.state.msg.forceInactiveUntil = date.getTime();
 					} else {
 						const time = node.state.todaysSchedules[node.state.todaysSchedules.length -1].time + Number(config.inactiveoffset) * Number(config.inactiveoffsettype);
