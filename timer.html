@@ -4,7 +4,7 @@
 	const timerDefaults = (()=>{
 		const obj = {};
 		for(let i=0;i<TIMER_COUNT;i++){
-			const id = i+1;
+			const id = i;
 			obj[`sc${id}TimeActive`] = {value: false};
 			obj[`sc${id}TimeAction`] = {value:0};
 			obj[`sc${id}Timetype`] = {value:"time"};
@@ -14,7 +14,7 @@
 			obj[`sc${id}Zmanoffsettype`] = {value:60000};
 		}
 		for(let i=0;i<DAYS_COUNT;i++){
-			const id = i+1;
+			const id = i;
 			obj[`sc${id}DateActive`] = {value: false};
 			obj[`sc${id}DateAction`] = {value:0};
 			obj[`sc${id}Datetype`] = {value:"weekday"};
@@ -47,7 +47,7 @@
 			obj[`sc${id}Heshvan`] = {value:1};
 			obj[`sc${id}Kislev`] = {value:1};
 			obj[`sc${id}Tevet`] = {value:1};
-			obj[`sc${id}Shvat`] = {value:1};
+			obj[`sc${id}Shevat`] = {value:1};
 			obj[`sc${id}Adar1`] = {value:1};
 			obj[`sc${id}Adar2`] = {value:1};
 			obj[`sc${id}jmonthdays`] = {};
@@ -296,10 +296,10 @@
 		.specialinclude {
 			display: none;
 		}
-		#node-input-sc1DateAction .specialinclude {
+		#node-input-sc0DateAction .specialinclude {
 			display: inline-block;
 		}
-		#node-input-sc1DateAction .onlyinclude, #node-input-sc1DateAction .reginclude {
+		#node-input-sc0DateAction .onlyinclude, #node-input-sc0DateAction .reginclude {
 			display:none;
 		}
 		.inline {
@@ -326,6 +326,66 @@
 			<i class="fa fa-chevron-up expanded-vis"></i>
 		</h4>
 		
+				<div class="js-entry entry expanded-vis" >
+					<div class="form-row"  data-nodetype="TimeActive">
+						<label for="node-input-sc0TimeActive" >Active</label>
+						<input type="checkbox" id="node-input-sc0TimeActive" class="js-active" />
+					</div>
+					<div class="form-row"  data-nodetype="TimeAction">
+						<label for="node-input-sc0TimeAction" >Action:</label>
+						<select id="node-input-sc0TimeAction" >
+							<option value="1">On</option>
+							<option value="0">Off</option>
+						</select>
+					</div>
+					<div class="form-row" data-nodetype="Timetype">
+						<label for="node-input-sc0Timetype" >Time Type</label>
+						<select id="node-input-sc0Timetype"  class="js-timetype">
+							<option value="time">Time</option>
+							<option value="zman">Zman</option>
+						</select>
+					</div>
+					<div class="form-row time-selection"  data-nodetype="Time">
+						<label for="node-input-sc0Time" style="width:40px">Time:</label>
+						<input type="time" id="node-input-sc0Time" style="width:110px"/>
+					</div>
+					<div class="form-row zman-selection"  data-nodetype="Zman">
+						<label for="node-input-sc0Zman" style="width:56px">Zman <i title="Avaliable Zmanim are the basic zmanim from the KosherZmanim lib" class="fa fa-question-circle"></i>: </label>
+						<select id="node-input-sc0Zman" style="width:138px">
+							<option value="BeginAstronomicalTwilight">BeginAstronomicalTwilight</option>
+							<option value="AlosHashachar">AlosHashachar</option>
+							<option value="Alos72">Alos72</option>
+							<option value="BeginNauticalTwilight">BeginNauticalTwilight</option>
+							<option value="BeginCivilTwilight">BeginCivilTwilight</option>
+							<option value="SeaLevelSunrise">SeaLevelSunrise</option>
+							<option value="Sunrise">Sunrise</option>
+							<option value="SofZmanShmaMGA">SofZmanShmaMGA</option>
+							<option value="SofZmanShmaGRA">SofZmanShmaGRA</option>
+							<option value="SofZmanTfilaMGA">SofZmanTfilaMGA</option>
+							<option value="SofZmanTfilaGRA">SofZmanTfilaGRA</option>
+							<option value="Chatzos">Chatzos</option>
+							<option value="CandleLighting">CandleLighting</option>
+							<option value="SeaLevelSunset">SeaLevelSunset</option>
+							<option value="Sunset">Sunset</option>
+							<option value="EndCivilTwilight">EndCivilTwilight</option>
+							<option value="Tzais">Tzais</option>
+							<option value="EndNauticalTwilight">EndNauticalTwilight</option>
+							<option value="Tzais72">Tzais72</option>
+							<option value="EndAstronomicalTwilight">EndAstronomicalTwilight</option>
+						</select>
+					</div>
+					<div class="form-row  zman-selection"  data-nodetype="Zmanoffset">
+						<label for="node-input-sc0Zmanoffset" style="width:40px;">Offset:</label>
+						<input type="number" id="node-input-sc0Zmanoffset" placeholder="0">
+						<select id="node-input-sc0Zmanoffsettype" name="node-input-sc0Zmanoffsettype">
+							<option value="1000">Seconds</option>
+							<option value="60000" selected="selected">Minutes</option>
+							<option value="3600000">Hours</option>
+						</select>
+					</div>
+				</div>
+			
+
 				<div class="js-entry entry expanded-vis" >
 					<div class="form-row"  data-nodetype="TimeActive">
 						<label for="node-input-sc1TimeActive" >Active</label>
@@ -865,66 +925,6 @@
 					</div>
 				</div>
 			
-
-				<div class="js-entry entry expanded-vis" >
-					<div class="form-row"  data-nodetype="TimeActive">
-						<label for="node-input-sc10TimeActive" >Active</label>
-						<input type="checkbox" id="node-input-sc10TimeActive" class="js-active" />
-					</div>
-					<div class="form-row"  data-nodetype="TimeAction">
-						<label for="node-input-sc10TimeAction" >Action:</label>
-						<select id="node-input-sc10TimeAction" >
-							<option value="1">On</option>
-							<option value="0">Off</option>
-						</select>
-					</div>
-					<div class="form-row" data-nodetype="Timetype">
-						<label for="node-input-sc10Timetype" >Time Type</label>
-						<select id="node-input-sc10Timetype"  class="js-timetype">
-							<option value="time">Time</option>
-							<option value="zman">Zman</option>
-						</select>
-					</div>
-					<div class="form-row time-selection"  data-nodetype="Time">
-						<label for="node-input-sc10Time" style="width:40px">Time:</label>
-						<input type="time" id="node-input-sc10Time" style="width:110px"/>
-					</div>
-					<div class="form-row zman-selection"  data-nodetype="Zman">
-						<label for="node-input-sc10Zman" style="width:56px">Zman <i title="Avaliable Zmanim are the basic zmanim from the KosherZmanim lib" class="fa fa-question-circle"></i>: </label>
-						<select id="node-input-sc10Zman" style="width:138px">
-							<option value="BeginAstronomicalTwilight">BeginAstronomicalTwilight</option>
-							<option value="AlosHashachar">AlosHashachar</option>
-							<option value="Alos72">Alos72</option>
-							<option value="BeginNauticalTwilight">BeginNauticalTwilight</option>
-							<option value="BeginCivilTwilight">BeginCivilTwilight</option>
-							<option value="SeaLevelSunrise">SeaLevelSunrise</option>
-							<option value="Sunrise">Sunrise</option>
-							<option value="SofZmanShmaMGA">SofZmanShmaMGA</option>
-							<option value="SofZmanShmaGRA">SofZmanShmaGRA</option>
-							<option value="SofZmanTfilaMGA">SofZmanTfilaMGA</option>
-							<option value="SofZmanTfilaGRA">SofZmanTfilaGRA</option>
-							<option value="Chatzos">Chatzos</option>
-							<option value="CandleLighting">CandleLighting</option>
-							<option value="SeaLevelSunset">SeaLevelSunset</option>
-							<option value="Sunset">Sunset</option>
-							<option value="EndCivilTwilight">EndCivilTwilight</option>
-							<option value="Tzais">Tzais</option>
-							<option value="EndNauticalTwilight">EndNauticalTwilight</option>
-							<option value="Tzais72">Tzais72</option>
-							<option value="EndAstronomicalTwilight">EndAstronomicalTwilight</option>
-						</select>
-					</div>
-					<div class="form-row  zman-selection"  data-nodetype="Zmanoffset">
-						<label for="node-input-sc10Zmanoffset" style="width:40px;">Offset:</label>
-						<input type="number" id="node-input-sc10Zmanoffset" placeholder="0">
-						<select id="node-input-sc10Zmanoffsettype" name="node-input-sc10Zmanoffsettype">
-							<option value="1000">Seconds</option>
-							<option value="60000" selected="selected">Minutes</option>
-							<option value="3600000">Hours</option>
-						</select>
-					</div>
-				</div>
-			
 	</div>
 	
 	<hr/>
@@ -934,6 +934,171 @@
 			<i class="fa fa-chevron-up expanded-vis"></i>
 		</h4>
 		
+				<div class="js-entry entry expanded-vis" >
+					<div class="form-row"  data-nodetype="DateActive">
+						<label for="node-input-sc0DateActive" >Active</label>
+						<input type="checkbox" id="node-input-sc0DateActive" class="js-active" />
+					</div>
+					<div class="form-row"  data-nodetype="DateAction">
+						<label for="node-input-sc0DateAction" >Action:</label>
+						<select id="node-input-sc0DateAction" >
+							<option value="1" class="reginclude">Include</option>
+							<option value="2" class="specialinclude">Include</option>
+							<option value="2" class="onlyinclude">Only Include</option>
+							<option value="0">Exclude</option>
+						</select>
+					</div>
+					<div class="form-row" data-nodetype="Datetype">
+						<label for="node-input-sc0Datetype" >Date Type</label>
+						<select id="node-input-sc0Datetype"  class="js-datetype">
+							<option value="weekday">Weekdays</option>
+							<option value="jmonthday">Jewish Dates</option>
+							<option value="gmonthday">Gregorian Dates</option>
+						</select>
+					</div>
+					<div class="form-row weekday-selection"  data-nodetype="Weekday">
+						<span class="inline">
+							<label for="node-input-sc0Sun" >Sunday</label>
+							<input type="checkbox" id="node-input-sc0Sun" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Mon" >Monday</label>
+							<input type="checkbox" id="node-input-sc0Mon"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Tue" >Tuesday</label>
+							<input type="checkbox" id="node-input-sc0Tue"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Wed" >Wednesday</label>
+							<input type="checkbox" id="node-input-sc0Wed"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Thu" >Thursday</label>
+							<input type="checkbox" id="node-input-sc0Thu" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Fri" >Friday</label>
+							<input type="checkbox" id="node-input-sc0Fri" />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Sat" >Saturday</label>
+							<input type="checkbox" id="node-input-sc0Sat"  />
+						</span>
+					</div>
+					<div class="form-row gmonthday-selection"  data-nodetype="gMonthday">
+						<span class="inline">
+							<label for="node-input-sc0Jan" >Jan</label>
+							<input type="checkbox" id="node-input-sc0Jan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Feb" >Feb</label>
+							<input type="checkbox" id="node-input-sc0Feb"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Mar" >Mar</label>
+							<input type="checkbox" id="node-input-sc0Mar"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Apr" >Apr</label>
+							<input type="checkbox" id="node-input-sc0Apr"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0May" >May</label>
+							<input type="checkbox" id="node-input-sc0May"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Jun" >Jun</label>
+							<input type="checkbox" id="node-input-sc0Jun"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Jul" >Jul</label>
+							<input type="checkbox" id="node-input-sc0Jul"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Aug" >Aug</label>
+							<input type="checkbox" id="node-input-sc0Aug"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Sep" >Sep</label>
+							<input type="checkbox" id="node-input-sc0Sep"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Oct" >Oct</label>
+							<input type="checkbox" id="node-input-sc0Oct"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Nov" >Nov</label>
+							<input type="checkbox" id="node-input-sc0Nov"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Dec" >Dec</label>
+							<input type="checkbox" id="node-input-sc0Dec"  />
+						</span>
+						<br />
+						<label for="node-input-sc0gmonthdays" title="Leave empty for all">Select Days</label>
+						<input type="text" patteran="d{1,2}(,d{1,2})*" id="node-input-sc0gmonthdays" placeholder="1,4,5,8,29"/>
+					</div>
+					<div class="form-row jmonthday-selection"  data-nodetype="jMonthday">
+						<span class="inline">
+							<label for="node-input-sc0Nisan" >Nisan</label>
+							<input type="checkbox" id="node-input-sc0Nisan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Iyar" >Iyar</label>
+							<input type="checkbox" id="node-input-sc0Iyar"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Sivan" >Sivan</label>
+							<input type="checkbox" id="node-input-sc0Sivan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Tamuz" >Tamuz</label>
+							<input type="checkbox" id="node-input-sc0Tamuz"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Av" >Av</label>
+							<input type="checkbox" id="node-input-sc0Av"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Elul" >Elul</label>
+							<input type="checkbox" id="node-input-sc0Elul"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Tishri" >Tishri</label>
+							<input type="checkbox" id="node-input-sc0Tishri"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Heshvan" >Cheshvan</label>
+							<input type="checkbox" id="node-input-sc0Heshvan"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Kislev" >Kislev</label>
+							<input type="checkbox" id="node-input-sc0Kislev"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Tevet" >Tevet</label>
+							<input type="checkbox" id="node-input-sc0Tevet"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Shevat" >Shevat</label>
+							<input type="checkbox" id="node-input-sc0Shevat"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Adar1" >Adar I</label>
+							<input type="checkbox" id="node-input-sc0Adar1"  />
+						</span>
+						<span class="inline">
+							<label for="node-input-sc0Adar2" >Adar, Adar II</label>
+							<input type="checkbox" id="node-input-sc0Adar2"  />
+						</span>
+						<br />
+						<label for="node-input-sc0jmonthdays" title="Leave empty for all">Select Days</label>
+						<input type="text" patteran="d{1,2}(,d{1,2})*" id="node-input-sc0jmonthdays" placeholder="1,4,5,8,29"/>
+					</div>
+				</div>
+		
+
 				<div class="js-entry entry expanded-vis" >
 					<div class="form-row"  data-nodetype="DateActive">
 						<label for="node-input-sc1DateActive" >Active</label>
@@ -2415,171 +2580,6 @@
 						<br />
 						<label for="node-input-sc9jmonthdays" title="Leave empty for all">Select Days</label>
 						<input type="text" patteran="d{1,2}(,d{1,2})*" id="node-input-sc9jmonthdays" placeholder="1,4,5,8,29"/>
-					</div>
-				</div>
-		
-
-				<div class="js-entry entry expanded-vis" >
-					<div class="form-row"  data-nodetype="DateActive">
-						<label for="node-input-sc10DateActive" >Active</label>
-						<input type="checkbox" id="node-input-sc10DateActive" class="js-active" />
-					</div>
-					<div class="form-row"  data-nodetype="DateAction">
-						<label for="node-input-sc10DateAction" >Action:</label>
-						<select id="node-input-sc10DateAction" >
-							<option value="1" class="reginclude">Include</option>
-							<option value="2" class="specialinclude">Include</option>
-							<option value="2" class="onlyinclude">Only Include</option>
-							<option value="0">Exclude</option>
-						</select>
-					</div>
-					<div class="form-row" data-nodetype="Datetype">
-						<label for="node-input-sc10Datetype" >Date Type</label>
-						<select id="node-input-sc10Datetype"  class="js-datetype">
-							<option value="weekday">Weekdays</option>
-							<option value="jmonthday">Jewish Dates</option>
-							<option value="gmonthday">Gregorian Dates</option>
-						</select>
-					</div>
-					<div class="form-row weekday-selection"  data-nodetype="Weekday">
-						<span class="inline">
-							<label for="node-input-sc10Sun" >Sunday</label>
-							<input type="checkbox" id="node-input-sc10Sun" />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Mon" >Monday</label>
-							<input type="checkbox" id="node-input-sc10Mon"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Tue" >Tuesday</label>
-							<input type="checkbox" id="node-input-sc10Tue"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Wed" >Wednesday</label>
-							<input type="checkbox" id="node-input-sc10Wed"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Thu" >Thursday</label>
-							<input type="checkbox" id="node-input-sc10Thu" />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Fri" >Friday</label>
-							<input type="checkbox" id="node-input-sc10Fri" />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Sat" >Saturday</label>
-							<input type="checkbox" id="node-input-sc10Sat"  />
-						</span>
-					</div>
-					<div class="form-row gmonthday-selection"  data-nodetype="gMonthday">
-						<span class="inline">
-							<label for="node-input-sc10Jan" >Jan</label>
-							<input type="checkbox" id="node-input-sc10Jan"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Feb" >Feb</label>
-							<input type="checkbox" id="node-input-sc10Feb"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Mar" >Mar</label>
-							<input type="checkbox" id="node-input-sc10Mar"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Apr" >Apr</label>
-							<input type="checkbox" id="node-input-sc10Apr"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10May" >May</label>
-							<input type="checkbox" id="node-input-sc10May"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Jun" >Jun</label>
-							<input type="checkbox" id="node-input-sc10Jun"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Jul" >Jul</label>
-							<input type="checkbox" id="node-input-sc10Jul"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Aug" >Aug</label>
-							<input type="checkbox" id="node-input-sc10Aug"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Sep" >Sep</label>
-							<input type="checkbox" id="node-input-sc10Sep"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Oct" >Oct</label>
-							<input type="checkbox" id="node-input-sc10Oct"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Nov" >Nov</label>
-							<input type="checkbox" id="node-input-sc10Nov"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Dec" >Dec</label>
-							<input type="checkbox" id="node-input-sc10Dec"  />
-						</span>
-						<br />
-						<label for="node-input-sc10gmonthdays" title="Leave empty for all">Select Days</label>
-						<input type="text" patteran="d{1,2}(,d{1,2})*" id="node-input-sc10gmonthdays" placeholder="1,4,5,8,29"/>
-					</div>
-					<div class="form-row jmonthday-selection"  data-nodetype="jMonthday">
-						<span class="inline">
-							<label for="node-input-sc10Nisan" >Nisan</label>
-							<input type="checkbox" id="node-input-sc10Nisan"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Iyar" >Iyar</label>
-							<input type="checkbox" id="node-input-sc10Iyar"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Sivan" >Sivan</label>
-							<input type="checkbox" id="node-input-sc10Sivan"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Tamuz" >Tamuz</label>
-							<input type="checkbox" id="node-input-sc10Tamuz"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Av" >Av</label>
-							<input type="checkbox" id="node-input-sc10Av"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Elul" >Elul</label>
-							<input type="checkbox" id="node-input-sc10Elul"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Tishri" >Tishri</label>
-							<input type="checkbox" id="node-input-sc10Tishri"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Heshvan" >Cheshvan</label>
-							<input type="checkbox" id="node-input-sc10Heshvan"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Kislev" >Kislev</label>
-							<input type="checkbox" id="node-input-sc10Kislev"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Tevet" >Tevet</label>
-							<input type="checkbox" id="node-input-sc10Tevet"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Shevat" >Shevat</label>
-							<input type="checkbox" id="node-input-sc10Shevat"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Adar1" >Adar I</label>
-							<input type="checkbox" id="node-input-sc10Adar1"  />
-						</span>
-						<span class="inline">
-							<label for="node-input-sc10Adar2" >Adar, Adar II</label>
-							<input type="checkbox" id="node-input-sc10Adar2"  />
-						</span>
-						<br />
-						<label for="node-input-sc10jmonthdays" title="Leave empty for all">Select Days</label>
-						<input type="text" patteran="d{1,2}(,d{1,2})*" id="node-input-sc10jmonthdays" placeholder="1,4,5,8,29"/>
 					</div>
 				</div>
 		
