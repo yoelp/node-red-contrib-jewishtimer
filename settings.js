@@ -6,7 +6,7 @@ module.exports = {
 	TIMER_HTML: (()=>{
 		const htmlArray = [];
 		for (let i = 0; i < TIMER_COUNT; i++) {
-			const idx = i + 1;
+			const idx = i;
 			htmlArray.push(`
 				<div class="js-entry entry expanded-vis" >
 					<div class="form-row"  data-nodetype="TimeActive">
@@ -73,7 +73,7 @@ module.exports = {
 	DAYS_HTML: (()=>{
 		const htmlArray = [];
 		for (let i = 0; i < DAYS_COUNT; i++) {
-			const idx = i + 1;
+			const idx;
 			htmlArray.push(`
 				<div class="js-entry entry expanded-vis" >
 					<div class="form-row"  data-nodetype="DateActive">

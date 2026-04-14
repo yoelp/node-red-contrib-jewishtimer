@@ -4,7 +4,7 @@
 	const timerDefaults = (()=>{
 		const obj = {};
 		for(let i=0;i<TIMER_COUNT;i++){
-			const id = i+1;
+			const id = i;
 			obj[`sc${id}TimeActive`] = {value: false};
 			obj[`sc${id}TimeAction`] = {value:0};
 			obj[`sc${id}Timetype`] = {value:"time"};
@@ -14,7 +14,7 @@
 			obj[`sc${id}Zmanoffsettype`] = {value:60000};
 		}
 		for(let i=0;i<DAYS_COUNT;i++){
-			const id = i+1;
+			const id = i;
 			obj[`sc${id}DateActive`] = {value: false};
 			obj[`sc${id}DateAction`] = {value:0};
 			obj[`sc${id}Datetype`] = {value:"weekday"};
@@ -296,10 +296,10 @@
 		.specialinclude {
 			display: none;
 		}
-		#node-input-sc1DateAction .specialinclude {
+		#node-input-sc0DateAction .specialinclude {
 			display: inline-block;
 		}
-		#node-input-sc1DateAction .onlyinclude, #node-input-sc1DateAction .reginclude {
+		#node-input-sc0DateAction .onlyinclude, #node-input-sc0DateAction .reginclude {
 			display:none;
 		}
 		.inline {
